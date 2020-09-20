@@ -10,7 +10,8 @@ from read_and_make_csv import start_reading
 
 
 def show_in_time_zone(time_x):
-    out_pt = _convert_to_local('export_translated.csv', time_x, 'all')  # takes in export_translated.csv and time zone
+    out_pt = _convert_to_local('export_translated.csv', time_x, 'show_all',
+                               True)  # takes in export_translated.csv and time zone
     print(out_pt)  # table of names and status in input time zone.
 
 
@@ -43,11 +44,11 @@ def main():
 
 '''show_by_name()
 takes first argument as name,
-second is timezone third is Show all or over 
+second is timezone third is Show show_all or over 
 for seeing not over ones not over is the only input
-for all anyting goes
-print(show_by_name('Fubuki', 'Asia/Kolkata','all'))
-print(show_by_name('all','Asia/Kolkata','not over'))
+for show_all anyting goes
+print(show_by_name('Fubuki', 'Asia/Kolkata','show_all'))
+print(show_by_name('show_all','Asia/Kolkata','not over'))
 
 client = discord.Client()
 @client.event
@@ -62,7 +63,7 @@ async def on_message(message):
 
     if message.content.startswith("&&send"):
         text = message.content.split()
-        response = show_by_name('Fubuki', 'Asia/Kolkata', 'all')
+        response = show_by_name('Fubuki', 'Asia/Kolkata', 'show_all')
         await message.channel.send(response)
     elif message.content == 'raise-exception':
         raise discord.DiscordException

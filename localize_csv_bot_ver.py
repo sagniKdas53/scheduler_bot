@@ -5,7 +5,7 @@ import pytz
 from tabulate import tabulate
 
 
-def _convert_to_local(file, time_z, name, all):
+def _convert_to_local(file, time_z, name, show_all):
     print('\n', '*' * 25)
     list_table = []
     # list_details = []
@@ -30,7 +30,7 @@ def _convert_to_local(file, time_z, name, all):
             # print(val,type(val))
             if name == 'all' or name == data[5]:
                 if val.days < 0:
-                    if all:
+                    if show_all:
                         list_table.append([data[5], "Over", writer.hour, writer.minute])
                 else:
                     list_table.append([data[5], val, writer.hour, writer.minute])
