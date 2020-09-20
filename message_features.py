@@ -4,7 +4,7 @@ import bot_friendly
 from token_cc import token
 
 client = discord.Client()
-bot_friendly.main()
+obJ_class = bot_friendly.exec_faster()
 
 
 @client.event
@@ -32,7 +32,7 @@ async def on_message(message):
         name = text[1]
         time = text[2]
         stat = text[3]
-        response = bot_friendly.show_by_name(name, time, stat)
+        response = obJ_class.show_by_name(name, time, stat)
         await message.channel.send(response)
     if message.content.startswith("&&exit"):
         await message.channel.send("Exiting")
