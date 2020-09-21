@@ -28,7 +28,11 @@ async def on_message(message):
     if message.content.startswith("&&send"):
         text = message.content
         text = text.split(' ')
-        # print(text) show_by_name('Fubuki', 'Asia/Kolkata','show_all'))
+        '''
+        show_by_name('Fubuki', 'Asia/Kolkata','not_over')) will show streams that you can still
+        catch 
+        show_by_name('Fubuki', 'Asia/Kolkata','all')) will show all the available streams
+        '''
         name = text[1]
         time = text[2]
         stat = text[3]

@@ -34,9 +34,9 @@ class exec_faster:
         name_f = str(now).replace(' ', '~')
         file_name = name_f + '.html'
         # make_file_html(file_name, False)
-        self.checked_f = requests.get('https://schedule.hololive.tv/').content
-        self.data = self.start_reading(self.checked_f)  # makes the export.csv (delocalized and untranslated)
-        self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # makes export_translated.csv
+        self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
+        self.data = self.start_reading(self.checked_f)  # parses it
+        self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # translates it
 
     def show_in_time_zone(self, time_x):
         out_pt = self._convert_to_local_object(self.trans_d, time_x, 'show_all',
@@ -44,15 +44,14 @@ class exec_faster:
         print(out_pt)  # table of names and status in input time zone.
 
     def show_by_name(self, name_to_show, time_x, boole):
-        if boole == 'not over':
+        if boole == 'not_over':
             out_pt = self._convert_to_local_object(self.trans_d, time_x,
-                                                   name_to_show, False)  # takes in export_translated.csv and time zone
+                                                   name_to_show, False)
         else:
             out_pt = self._convert_to_local_object(self.trans_d, time_x,
                                                    name_to_show, True)
         return out_pt  # table of names and status in input time zone.
 
-    @staticmethod
     def _convert_to_local_object(self, file, time_z, name, show_all):
         # print('\n', '*' * 25)
         list_table = []
@@ -63,6 +62,7 @@ class exec_faster:
             data = (row['MON'], row['DAY'], row['ID'], row['HR'], row['MN'], row['NAME'])  # MON,DAY,ID,HR,MN,NAME
             source_mon = data[0]
             source_day = data[1]
+            source_link = 'https://www.youtube.com/watch?v=' + data[2]
             source_hour = data[3]
             source_min = data[4]
             source_time = datetime(2020, int(source_mon), int(source_day), int(source_hour), int(source_min), 00, 0000)
@@ -77,14 +77,13 @@ class exec_faster:
             if name == 'all' or name == data[5]:
                 if val.days < 0:
                     if show_all:
-                        list_table.append([data[5], "Over", writer.hour, writer.minute])
+                        list_table.append([data[5], "Over", writer.hour, writer.minute, source_link])
                 else:
-                    list_table.append([data[5], val, writer.hour, writer.minute])
+                    list_table.append([data[5], str(val)[0:7], writer.hour, writer.minute, source_link])
 
-        table = tabulate(list_table, headers=['Name', 'Status', 'Hour', 'Minute'], tablefmt="plain")
+        table = tabulate(list_table, headers=['Name', 'Status', 'Hour', 'Minute', 'Link'], tablefmt="plain")
         return table
 
-    @staticmethod
     def start_reading(self, file_content):
         day_list = []
         hold = [0, 0]
@@ -121,7 +120,6 @@ class exec_faster:
                 hold = [int(hr[0]), int(hr[1])]
         return return_f
 
-    @staticmethod
     def time_left(self, full_inp):
         now_ = datetime.now()
         target_time_zone = pytz.timezone('Asia/Kolkata')
@@ -129,7 +127,6 @@ class exec_faster:
         left = full_inp - target_date_with_timezone
         return left
 
-    @staticmethod
     def translate_export(self, file, orig, tran):
         name_list = []
         for ele in range(len(orig)):
