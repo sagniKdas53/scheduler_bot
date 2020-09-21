@@ -4,7 +4,7 @@ import bot_friendly
 from token_cc import token
 
 client = discord.Client()
-obJ_class = bot_friendly.exec_faster()
+obJ_class = bot_friendly.ExecFaster()
 
 
 @client.event

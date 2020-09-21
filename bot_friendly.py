@@ -10,7 +10,7 @@ from tabulate import tabulate
 '''Here i will write the functions that could and would be imported in the bot finally'''
 
 
-class exec_faster:
+class ExecFaster:
     names_o = ['Iofi', '常闇トワ', '猫又おかゆ', 'アルランディス', '花咲みやび', '白銀ノエル', '桐生ココ', '鏡見キラ', '百鬼あやめ',
                '天音かなた', '影山シエン', 'Gura', 'Amelia', '姫森ルーナ', '癒月ちょこ', '岸堂天真', 'アステル・レダ', '夜空メル',
                '星街すいせい', '紫咲シオン', '兎田ぺこら', 'Risu', '荒咬オウガ', '桃鈴ねね', '雪花ラミィ', '白上フブキ', '奏手イヅル',
@@ -28,11 +28,10 @@ class exec_faster:
     checked_f = None
     data = None
     trans_d = None
+    now = None
 
     def __init__(self):
-        now = datetime.now()
-        name_f = str(now).replace(' ', '~')
-        file_name = name_f + '.html'
+        self.now = datetime.now()
         # make_file_html(file_name, False)
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
         self.data = self.start_reading(self.checked_f)  # parses it
@@ -65,7 +64,8 @@ class exec_faster:
             source_link = 'https://www.youtube.com/watch?v=' + data[2]
             source_hour = data[3]
             source_min = data[4]
-            source_time = datetime(2020, int(source_mon), int(source_day), int(source_hour), int(source_min), 00, 0000)
+            source_time = datetime(int(self.now.year), int(source_mon), int(source_day), int(source_hour),
+                                   int(source_min), 00, 0000)
             source_date_with_timezone = source_time_zone.localize(source_time)
             # print(type(source_date_with_timezone))
             val = self.time_left(source_date_with_timezone)
@@ -121,20 +121,20 @@ class exec_faster:
         return return_f
 
     def time_left(self, full_inp):
-        now_ = datetime.now()
+        self.now = datetime.now()
         target_time_zone = pytz.timezone('Asia/Kolkata')
-        target_date_with_timezone = now_.astimezone(target_time_zone)
+        target_date_with_timezone = self.now.astimezone(target_time_zone)
         left = full_inp - target_date_with_timezone
         return left
 
     def translate_export(self, file, orig, tran):
-        name_list = []
+        dict_name = {}
         for ele in range(len(orig)):
-            name_list.append([orig[ele].strip(), tran[ele].strip()])
+            dict_name[orig[ele].strip()] = tran[ele].strip()
         # print(name_list)
         # for name_data in name_list:
         # print(name_data[0],'\t',name_data[1])
-        dict_name = dict(name_list)  # idk how to fix this
+        # dict_name = dict(name_list)  # idk how to fix this
         for key, val in dict_name.items():
             for idx, ele in enumerate(file):
                 if key in ele:
@@ -143,7 +143,7 @@ class exec_faster:
 
 
 '''
-obJ_class = exec_faster()
+obJ_class = ExecFaster()
 print(obJ_class.show_by_name('Fubuki', 'Asia/Kolkata', 'show_all'))
 print(obJ_class.show_by_name('Coco', 'Asia/Kolkata', 'show_all'))
 print(obJ_class.show_by_name('Ina', 'Asia/Kolkata', 'show_all'))
