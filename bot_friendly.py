@@ -103,7 +103,7 @@ class ExecFaster:
         # f = open("export.csv", "w", encoding='utf8')
         return_f.append('MON,DAY,ID,HR,MN,NAME\n')
         for k in range(0, len(containers_link)):
-            match = re.findall(r'href="https:[//]*www\.youtube\.com/watch\?v=([0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]*)',
+            match = re.findall(r'href=\"https:[//]*www\.youtube\.com/watch\?v=([0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]*)\"',
                                str(containers_link[k]))[0]
             time_name = containers_link[k].text.replace(' ', '').split()
             hr = time_name[0].split(':')
