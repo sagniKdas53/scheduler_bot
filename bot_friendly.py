@@ -61,7 +61,7 @@ class ExecFaster:
             data = (row['MON'], row['DAY'], row['ID'], row['HR'], row['MN'], row['NAME'])  # MON,DAY,ID,HR,MN,NAME
             source_mon = data[0]
             source_day = data[1]
-            source_link = 'https://www.youtube.com/watch?v=' + data[2]
+            source_link = '[Link](https://www.youtube.com/watch?v=' + data[2] + ')'
             source_hour = data[3]
             source_min = data[4]
             source_time = datetime(int(self.now.year), int(source_mon), int(source_day), int(source_hour),
@@ -140,6 +140,13 @@ class ExecFaster:
                 if key in ele:
                     file[idx] = ele.replace(key, val)
         return file
+
+    def update(self):
+        self.now = datetime.now()
+        # make_file_html(file_name, False)
+        self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
+        self.data = self.start_reading(self.checked_f)  # parses it
+        self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # translates it
 
 
 '''

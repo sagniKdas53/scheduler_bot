@@ -7,6 +7,9 @@ client = discord.Client()
 obJ_class = bot_friendly.ExecFaster()
 
 
+# global obJ_class
+
+
 @client.event
 async def on_ready():
     print(f'{client.user.name} has connected to Discord!')
@@ -42,6 +45,17 @@ async def on_message(message):
         await message.channel.send("Exiting")
         await client.close()
         print("Successfully logged out")
+    if message.content.startswith("&&update"):
+        await message.channel.send("Wait a few seconds")
+        obJ_class.update()
+        '''
+        The idea was to reassign the object to itself to make a global upgraded copy
+        global obJ_class
+        obJ_class = bot_friendly.ExecFaster()
+        del obJ_class
+        obJ_class = obJ_class_
+        '''
+
     elif message.content == 'raise-exception':
         raise discord.DiscordException
 
