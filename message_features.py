@@ -25,28 +25,32 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
+    # global obJ_class
     if message.author == client.user:
         return
-
     if message.content.startswith("&&send"):
         text = message.content
         text = text.split(' ')
-        '''
-        show_by_name('Fubuki', 'Asia/Kolkata','not_over')) will show streams that you can still
-        catch 
-        show_by_name('Fubuki', 'Asia/Kolkata','all')) will show all the available streams
-        '''
         name = text[1]
         time = text[2]
         stat = text[3]
-        response = obJ_class.show_by_name(name, time, stat)
+        link_s, response = obJ_class.show_by_name(name, time, stat)
+        embed = discord.Embed(title='Links')
+        for row in range(0, len(link_s)):
+            embed.add_field(name='[' + str(row) + ']', value=link_s[row])
+        # await message.channel.send(embed=embed)
+        '''
+        New Idea: send the normal stuff and then send the link in embeds.
+        '''
         await message.channel.send(response)
+        await message.channel.send(embed=embed)
     if message.content.startswith("&&exit"):
         await message.channel.send("Exiting")
         await client.close()
         print("Successfully logged out")
     if message.content.startswith("&&update"):
         await message.channel.send("Wait a few seconds")
+        # obJ_class = bot_friendly.ExecFaster()
         obJ_class.update()
         '''
         The idea was to reassign the object to itself to make a global upgraded copy
@@ -55,7 +59,6 @@ async def on_message(message):
         del obJ_class
         obJ_class = obJ_class_
         '''
-
     elif message.content == 'raise-exception':
         raise discord.DiscordException
 

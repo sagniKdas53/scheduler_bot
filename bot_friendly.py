@@ -4,8 +4,8 @@ from datetime import datetime
 
 import pytz
 import requests
+import tabulate
 from bs4 import BeautifulSoup as _soup_
-from tabulate import tabulate
 
 '''Here i will write the functions that could and would be imported in the bot finally'''
 
@@ -18,11 +18,11 @@ class ExecFaster:
                '赤井はあと', '尾丸ポルカ', '獅白ぼたん', '夏色まつり', 'Kiara', '宝鐘マリン', '律可', 'Calli', 'Ina', 'ロボ子さん',
                'ときのそら', 'さくらみこ', '大神ミオ', 'AZKi', '夜霧', '希薇娅', '黑桃影', '朵莉丝', '阿媂娅', '罗莎琳']
 
-    names_trs = ['Iofi', 'Towa', 'Okayu', 'Aruran *', 'Miyabi *', 'Noel', 'Coco', 'Kira', 'Ayame', 'Kanata', 'Shien *',
-                 'Gura', 'Amelia', 'Luna', 'Choco', 'Temma *', 'Reda *', 'Mel', 'Suisei', 'Shion', 'Pekora', 'Risu',
-                 'Ouga', 'Nene #', 'Lamy #', 'Fubuki', 'Izuru *', 'Korone', 'Aqua', 'Subaru', 'Watame #', 'Moona',
-                 'Flare', 'Robert', 'Akirose', 'Rushia', 'Haato', 'Polka', 'Botan #', 'Matsuri', 'Kiara', 'Marine',
-                 'Ritsumei *', 'Calli', 'Ina', 'Roboco-san', 'Sora', 'Miko', 'Mio', 'AZKi', 'Yogiri', 'Civia', 'Echo',
+    names_trs = ['Iofi', 'Towa', 'Okayu', 'Aruran', 'Miyabi', 'Noel', 'Coco', 'Kira', 'Ayame', 'Kanata', 'Shien',
+                 'Gura', 'Amelia', 'Luna', 'Choco', 'Temma', 'Reda', 'Mel', 'Suisei', 'Shion', 'Pekora', 'Risu',
+                 'Ouga', 'Nene', 'Lamy', 'Fubuki', 'Izuru', 'Korone', 'Aqua', 'Subaru', 'Watame', 'Moona',
+                 'Flare', 'Robert', 'Akirose', 'Rushia', 'Haato', 'Polka', 'Botan', 'Matsuri', 'Kiara', 'Marine',
+                 'Ritsumei', 'Calli', 'Ina', 'Roboco-san', 'Sora', 'Miko', 'Mio', 'AZKi', 'Yogiri', 'Civia', 'Echo',
                  'Doris', 'Artia', 'Rosalyn']
 
     checked_f = None
@@ -55,6 +55,8 @@ class ExecFaster:
         # print('\n', '*' * 25)
         list_table = []
         # list_details = []
+        link_list = []
+        indX = 0
         source_time_zone = pytz.timezone("Asia/Tokyo")
         reader = csv.DictReader(file)
         for row in reader:
@@ -77,12 +79,15 @@ class ExecFaster:
             if name == 'all' or name == data[5]:
                 if val.days < 0:
                     if show_all:
-                        list_table.append([data[5], "Over", writer.hour, writer.minute, source_link])
+                        list_table.append([indX, data[5], "Over", writer.hour, writer.minute])
+                        link_list.append(source_link)
                 else:
-                    list_table.append([data[5], str(val)[0:7], writer.hour, writer.minute, source_link])
+                    list_table.append([indX, data[5], str(val)[0:7], writer.hour, writer.minute])
+                    link_list.append(source_link)
+                indX += 1
 
-        table = tabulate(list_table, headers=['Name', 'Status', 'Hour', 'Minute', 'Link'], tablefmt="plain")
-        return table
+        table = tabulate.tabulate(list_table, headers=['Index', 'Name', 'Status', 'Hour', 'Minute'], tablefmt="plain")
+        return link_list, table
 
     def start_reading(self, file_content):
         day_list = []
