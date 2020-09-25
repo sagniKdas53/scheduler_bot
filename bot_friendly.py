@@ -76,7 +76,7 @@ class ExecFaster:
             # list_details.append(['{},{},{},{}{}'.format(writer.strftime("%m,%d"), data[2],
             # writer.strftime("%H,%M"), data[5], '\n')])
             # print(val,type(val))
-            if name == 'all' or name == data[5]:
+            if name == 'All' or name == data[5]:
                 if val.days < 0:
                     if show_all:
                         list_table.append([indX, data[5], "Over", writer.hour, writer.minute])

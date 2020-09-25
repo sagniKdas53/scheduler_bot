@@ -26,6 +26,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
     # global obJ_class
+    # i = 0
     if message.author == client.user:
         return
     if message.content.startswith("&&send"):
@@ -34,16 +35,36 @@ async def on_message(message):
         name = text[1]
         time = text[2]
         stat = text[3]
+        name = name.title()
+        # print(name)
         link_s, response = obJ_class.show_by_name(name, time, stat)
+        # print(link_s, response)
+        await message.channel.send(response)
         embed = discord.Embed(title='Links')
+        # print(len(link_s))
         for row in range(0, len(link_s)):
-            embed.add_field(name='[' + str(row) + ']', value=link_s[row])
-        # await message.channel.send(embed=embed)
+            embed.add_field(name='[' + str(row) + ']', value=link_s[row], inline=True)
+
+        await message.channel.send(embed=embed)
         '''
+        Also i need to improve the over or live determination method.
+        
+        So i need to find out about the limits of the embeds like how may embeds it can send and also need to account 
+    for the size of the embeds so that it does not exceed it. The idea here was to make a new embed once the last one
+         was getting too long so i decided to split it at 25 , this is not working maybe i am doing something wrong.
+               
+                    if i < 25:
+                        embed.add_field(name='[' + str(row) + ']', value=link_s[row], inline=False)
+                        print(i)
+                        i += 1
+                    if i == 25:
+                        print("New Embed to make")
+                        await message.channel.send(embed=embed)
+                        embed = discord.Embed(title='More Links')
+                        i = 0
+        # await message.channel.send(embed=embed)
         New Idea: send the normal stuff and then send the link in embeds.
         '''
-        await message.channel.send(response)
-        await message.channel.send(embed=embed)
     if message.content.startswith("&&exit"):
         await message.channel.send("Exiting")
         await client.close()
