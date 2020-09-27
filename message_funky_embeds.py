@@ -1,5 +1,5 @@
 import json
-import urllib.request
+from urllib import request, parse
 
 import discord
 
@@ -13,10 +13,10 @@ obJ_class = bot_friendly.ExecFaster()
 def video_details(vid):
     params = {"format": "json", "url": vid}
     url = "https://www.youtube.com/oembed"
-    query_string = urllib.parse.urlencode(params)
+    query_string = parse.urlencode(params)
     url = url + "?" + query_string
     details = []
-    with urllib.request.urlopen(url) as response:
+    with request.urlopen(url) as response:
         response_text = response.read()
         data = json.loads(response_text.decode())
         # pprint.pprint(data)
