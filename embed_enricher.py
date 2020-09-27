@@ -1,12 +1,13 @@
 import json
 import urllib.request
 
+
 # change to yours VideoID or change url inparams
-VideoID = "A67ZkAd1wmI"
+# VideoID = "A67ZkAd1wmI"
 
 
 def video_details(vid):
-    params = {"format": "json", "url": "https://www.youtube.com/watch?v=%s" % vid}
+    params = {"format": "json", "url": vid}
     url = "https://www.youtube.com/oembed"
     query_string = urllib.parse.urlencode(params)
     url = url + "?" + query_string
@@ -15,7 +16,8 @@ def video_details(vid):
         response_text = response.read()
         data = json.loads(response_text.decode())
         # pprint.pprint(data)
-        details.append([data['title'], data['thumbnail_url']])
+        details = [data['title'], data['thumbnail_url']]
     return details
 
-# video_details(VideoID)
+# str = '[Link](https://www.youtube.com/watch?v=8kxthB-jp_Y)'
+# print(video_details(str[7:-1]))
