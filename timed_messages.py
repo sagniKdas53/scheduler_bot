@@ -5,7 +5,7 @@ from datetime import timedelta
 import discord
 import time
 
-import bot_friendly
+import bot_with_embeds
 from token_cc import token
 
 WAIT_TIME_SECONDS = 60 * 15
@@ -15,9 +15,9 @@ class ProgramKilled(Exception):
     pass
 
 
-def updt():
+def update_demon():
     obJ_class.update()
-    print("Schedule Updated on :", time.ctime())
+    print("\nSchedule Updated on :", time.ctime())
 
 
 def signal_handler(signum, frame):
@@ -44,7 +44,7 @@ class Job(threading.Thread):
 
 
 client = discord.Client()
-obJ_class = bot_friendly.ExecFaster()
+obJ_class = bot_with_embeds.ExecFaster()
 
 
 @client.event
@@ -68,16 +68,23 @@ async def on_message(message):
         text = message.content
         text = text.split(' ')
         name = text[1]
-        time_f = text[2]
+        time_t = text[2]
         stat = text[3]
         name = name.title()
-        link_s, response = obJ_class.show_by_name(name, time_f, stat)
+        link_s, response = obJ_class.show_by_name(name, time_t, stat)
         await message.channel.send(response)
-        embed = discord.Embed(title='Links')
-        for row in range(0, len(link_s)):
-            embed.add_field(name='[' + str(row) + ']', value=link_s[row], inline=True)
-
-        await message.channel.send(embed=embed)
+        size = len(link_s)  # number of links to process
+        list_of_titles_and_thumbs = []
+        for link in link_s:
+            list_of_titles_and_thumbs.append(obJ_class.video_details(link[7:-1]))
+        print(list_of_titles_and_thumbs)
+        embed = discord.Embed(title='Video')
+        for row in range(0, size):
+            print(list_of_titles_and_thumbs[row])
+            embed.add_field(name=list_of_titles_and_thumbs[row][0], value='[Vid](' + link_s[row] + ')', inline=True)
+            embed.set_image(url=list_of_titles_and_thumbs[row][1])
+            await message.channel.send(embed=embed)
+            embed.clear_fields()
 
     if message.content.startswith("&&exit"):
         await message.channel.send("Exiting")
@@ -100,12 +107,12 @@ async def on_error(event, *args, **kwargs):
             raise
 
 
-client.run(token(), bot=True)
 signal.signal(signal.SIGTERM, signal_handler)
 signal.signal(signal.SIGINT, signal_handler)
 print(time.ctime())
-job = Job(interval=timedelta(seconds=WAIT_TIME_SECONDS), execute=updt)
+job = Job(interval=timedelta(seconds=WAIT_TIME_SECONDS), execute=update_demon)
 job.start()
+client.run(token(), bot=True)
 
 while True:
     try:

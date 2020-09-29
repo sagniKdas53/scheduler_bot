@@ -38,6 +38,8 @@ class ExecFaster:
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
         self.data = self.start_reading(self.checked_f)  # parses it
         self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # translates it
+        # self.list_link_s = self.video_details_all(self.trans_d)
+        # print(self.list_link_s)
 
     def show_in_time_zone(self, time_x):
         out_pt = self._convert_to_local_object(self.trans_d, time_x, 'show_all',
@@ -83,6 +85,7 @@ class ExecFaster:
                 indX += 1
 
         table = tabulate.tabulate(list_table, headers=['Index', 'Name', 'Status', 'Hour', 'Minute'], tablefmt="plain")
+        print(link_list)
         return link_list, table
 
     def start_reading(self, file_content):
@@ -119,9 +122,23 @@ class ExecFaster:
                 hold = [int(hr[0]), int(hr[1])]
         return return_f
 
-    def get_atr(self, vid_list):
-        details = []
-        for vid in vid_list:
+    def video_details(self, vid):
+        params = {"format": "json", "url": vid}
+        url = "https://www.youtube.com/oembed"
+        query_string = parse.urlencode(params)
+        url = url + "?" + query_string
+        with request.urlopen(url) as response:
+            response_text = response.read()
+            data = json.loads(response_text.decode())
+            details = [data['title'], data['thumbnail_url']]
+        return details
+
+    def video_details_all(self, file):
+        reader = csv.DictReader(file)
+        list_id = []
+        for row in reader:
+            data = (row['MON'], row['DAY'], row['ID'], row['HR'], row['MN'], row['NAME'])  # MON,DAY,ID,HR,MN,NAME
+            vid = data[2]  # this only conatins the id
             params = {"format": "json", "url": vid}
             url = "https://www.youtube.com/oembed"
             query_string = parse.urlencode(params)
@@ -129,8 +146,8 @@ class ExecFaster:
             with request.urlopen(url) as response:
                 response_text = response.read()
                 data = json.loads(response_text.decode())
-                details.append([data['title'], data['thumbnail_url']])
-        return details
+                list_id.append([data['title'], data['thumbnail_url']])
+        return list_id
 
     def time_left(self, full_inp):
         self.now = datetime.now()
