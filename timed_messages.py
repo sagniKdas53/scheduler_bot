@@ -3,6 +3,7 @@ import threading
 from datetime import timedelta
 
 import discord
+import sys
 import time
 
 import bot_with_embeds
@@ -16,8 +17,10 @@ class ProgramKilled(Exception):
 
 
 def update_demon():
+    size_b4 = sys.getsizeof(obJ_class)
     obJ_class.update()
-    print("\nSchedule Updated on :", time.ctime())
+    size_af = sys.getsizeof(obJ_class)
+    print("\nSchedule Updated on :", time.ctime(), '\nChange in size : ', size_b4 - size_af)
 
 
 def signal_handler(signum, frame):
@@ -75,6 +78,9 @@ async def on_message(message):
         await message.channel.send(response)
         size = len(link_s)  # number of links to process
         list_of_titles_and_thumbs = []
+        '''The new idea is to use the vid as the key of the dictionary 
+        that will have the thumbs and video tiles and it will be made by the __init__ not here then when necessary
+        the key can be used here to get the values and make the embed'''
         for link in link_s:
             list_of_titles_and_thumbs.append(obJ_class.video_details(link[7:-1]))
         print(list_of_titles_and_thumbs)
