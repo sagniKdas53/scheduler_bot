@@ -88,7 +88,8 @@ class ExecFaster:
         print(link_list)
         return link_list, table
 
-    def start_reading(self, file_content):
+    @classmethod
+    def start_reading(cls, file_content):
         day_list = []
         hold = [0, 0]
         ms = 0
@@ -122,7 +123,8 @@ class ExecFaster:
                 hold = [int(hr[0]), int(hr[1])]
         return return_f
 
-    def video_details(self, vid):
+    @classmethod
+    def video_details(cls, vid):
         params = {"format": "json", "url": vid}
         url = "https://www.youtube.com/oembed"
         query_string = parse.urlencode(params)
@@ -133,12 +135,13 @@ class ExecFaster:
             details = [data['title'], data['thumbnail_url']]
         return details
 
-    def video_details_all(self, file):
+    @classmethod
+    def video_details_all(cls, file):
         reader = csv.DictReader(file)
         list_id = []
         for row in reader:
             data = (row['MON'], row['DAY'], row['ID'], row['HR'], row['MN'], row['NAME'])  # MON,DAY,ID,HR,MN,NAME
-            vid = data[2]  # this only conatins the id
+            vid = data[2]  # this only contains the id
             params = {"format": "json", "url": vid}
             url = "https://www.youtube.com/oembed"
             query_string = parse.urlencode(params)
@@ -156,7 +159,8 @@ class ExecFaster:
         left = full_inp - target_date_with_timezone
         return left
 
-    def translate_export(self, file, orig, tran):
+    @classmethod
+    def translate_export(cls, file, orig, tran):
         dict_name = {}
         for ele in range(len(orig)):
             dict_name[orig[ele].strip()] = tran[ele].strip()

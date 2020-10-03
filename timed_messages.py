@@ -9,7 +9,7 @@ import time
 import bot_with_embeds
 from token_cc import token
 
-WAIT_TIME_SECONDS = 60 * 15
+WAIT_TIME_SECONDS = 60 * 10
 
 
 class ProgramKilled(Exception):
@@ -24,6 +24,7 @@ def update_demon():
 
 
 def signal_handler(signum, frame):
+    print("Killed by :", signum, "\nIn Frame :" + frame)
     raise ProgramKilled
 
 
