@@ -1,28 +1,11 @@
-import json
-from urllib import request, parse
-
 import discord
 
-import internal_working_bot_primitive
+import working_bot_newer
 from token_cc import token
 
 client = discord.Client()
-obJ_class = internal_working_bot_primitive.ExecFaster()
+obJ_class = working_bot_newer.ExecFaster()
 
-
-def video_details(vid):
-    params = {"format": "json", "url": vid}
-    url = "https://www.youtube.com/oembed"
-    query_string = parse.urlencode(params)
-    url = url + "?" + query_string
-    with request.urlopen(url) as response:
-        response_text = response.read()
-        data = json.loads(response_text.decode())
-        details = [data['title'], data['thumbnail_url']]
-    return details
-
-
-# need to check wtf is going on here
 
 @client.event
 async def on_ready():
@@ -48,23 +31,21 @@ async def on_message(message):
         time = text[2]
         stat = text[3]
         name = name.title()
-        print(name)
+        print("Requested: " + name + "Time Zone: " + time + "Showing: " + stat)
         link_s, response = obJ_class.show_by_name(name, time, stat)
         print(link_s, response)
         await message.channel.send(response)
-        size = len(link_s)
-        print(size)
-        list_of_titles_and_thumbs = []
-        for link in link_s:
-            list_of_titles_and_thumbs.append(video_details(link[7:-1]))
-        print(list_of_titles_and_thumbs)
         embed = discord.Embed(title='Video')
-        for row in range(0, size):
-            print(list_of_titles_and_thumbs[row])
-            embed.add_field(name=list_of_titles_and_thumbs[row][0], value='[Vid](' + link_s[row] + ')', inline=True)
-            embed.set_image(url=list_of_titles_and_thumbs[row][1])
-            await message.channel.send(embed=embed)
-            embed.clear_fields()
+        size = len(link_s)
+        print("Number of entries =" + str(size))
+        for link in link_s:
+            for sub_l in obJ_class.list_of_titles_and_thumbs:
+                if link in sub_l:
+                    embed.add_field(name=sub_l[1], value='[Vid](' + link + ')',
+                                    inline=True)
+                    embed.set_image(url=sub_l[2])
+                    await message.channel.send(embed=embed)
+                    embed.clear_fields()
 
     if message.content.startswith("&&exit"):
         await message.channel.send("Exiting")

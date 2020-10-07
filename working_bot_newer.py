@@ -22,19 +22,23 @@ class ExecFaster:
                  'Gura', 'Amelia', 'Luna', 'Choco', 'Temma', 'Reda', 'Mel', 'Suisei', 'Shion', 'Pekora', 'Risu',
                  'Ouga', 'Nene', 'Lamy', 'Fubuki', 'Izuru', 'Korone', 'Aqua', 'Subaru', 'Watame', 'Moona',
                  'Flare', 'Robert', 'Akirose', 'Rushia', 'Haato', 'Polka', 'Botan', 'Matsuri', 'Kiara', 'Marine',
-                 'Ritsumei', 'Calli', 'Ina', 'Roboco-san', 'Sora', 'Miko', 'Mio', 'AZKi', 'Yogiri', 'Civia', 'Echo',
+                 'Ritsumei', 'Calli', 'Ina', 'Roboco', 'Sora', 'Miko', 'Mio', 'AZKi', 'Yogiri', 'Civia', 'Echo',
                  'Doris', 'Artia', 'Rosalyn']
 
     checked_f = None
     data = None
     trans_d = None
     now = None
+    list_of_titles_and_thumbs = None
+    list_url = None
 
     def __init__(self):
         self.now = datetime.now()
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
         self.data = self.start_reading(self.checked_f)  # parses it
         self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # translates it
+        self.list_of_titles_and_thumbs = self.video_details(self.list_url)
+        print(self.list_of_titles_and_thumbs)
 
     def show_in_time_zone(self, time_x):
         out_pt = self._convert_to_local_object(self.trans_d, time_x, 'show_all',
@@ -57,10 +61,10 @@ class ExecFaster:
         source_time_zone = pytz.timezone("Asia/Tokyo")
         reader = csv.DictReader(file)
         for row in reader:
-            data = (row['MON'], row['DAY'], row['ID'], row['HR'], row['MN'], row['NAME'])  # MON,DAY,ID,HR,MN,NAME
+            data = (row['MON'], row['DAY'], row['URL'], row['HR'], row['MN'], row['NAME'])  # MON,DAY,ID,HR,MN,NAME
             source_mon = data[0]
             source_day = data[1]
-            source_link = '[Link](https://www.youtube.com/watch?v=' + data[2] + ')'
+            source_link = '[Link](' + data[2] + ')'
             source_hour = data[3]
             source_min = data[4]
             source_time = datetime(int(self.now.year), int(source_mon), int(source_day), int(source_hour),
@@ -99,10 +103,11 @@ class ExecFaster:
         print("Schedule contains: ")
         for month, day in day_list:
             print("{}/{},".format(month, day), end='')
-        return_f.append('MON,DAY,ID,HR,MN,NAME\n')
+        return_f.append('MON,DAY,URL,HR,MN,NAME\n')
         for k in range(0, len(containers_link)):
-            match = re.findall(r'href=\"https:[//]*www\.youtube\.com/watch\?v=([0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]*)\"',
+            match = re.findall(r'href=\"(https:[//]*www\.youtube\.com/watch\?v=[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]*)\"',
                                str(containers_link[k]))[0]
+            cls.list_url.append(match)
             time_name = containers_link[k].text.replace(' ', '').split()
             hr = time_name[0].split(':')
             if int(hr[0]) != 23 and int(hr[1]) <= 59 and hold[0] == 23:
@@ -119,24 +124,9 @@ class ExecFaster:
         return return_f
 
     @classmethod
-    def video_details(cls, vid):
-        params = {"format": "json", "url": vid}
-        url = "https://www.youtube.com/oembed"
-        query_string = parse.urlencode(params)
-        url = url + "?" + query_string
-        with request.urlopen(url) as response:
-            response_text = response.read()
-            data = json.loads(response_text.decode())
-            details = [data['title'], data['thumbnail_url']]
-        return details
-
-    @classmethod
-    def video_details_all(cls, file):
-        reader = csv.DictReader(file)
-        list_id = []
-        for row in reader:
-            data = (row['MON'], row['DAY'], row['ID'], row['HR'], row['MN'], row['NAME'])  # MON,DAY,ID,HR,MN,NAME
-            vid = data[2]  # this only contains the id
+    def video_details(cls, video):
+        details = []
+        for vid in video:
             params = {"format": "json", "url": vid}
             url = "https://www.youtube.com/oembed"
             query_string = parse.urlencode(params)
@@ -144,8 +134,8 @@ class ExecFaster:
             with request.urlopen(url) as response:
                 response_text = response.read()
                 data = json.loads(response_text.decode())
-                list_id.append([data['title'], data['thumbnail_url']])
-        return list_id
+                details.append([vid, data['title'], data['thumbnail_url']])
+        return details
 
     def time_left(self, full_inp):
         self.now = datetime.now()
@@ -170,3 +160,4 @@ class ExecFaster:
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
         self.data = self.start_reading(self.checked_f)  # parses it
         self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # translates it
+        self.list_of_titles_and_thumbs = self.video_details(self.list_url)

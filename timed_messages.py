@@ -6,10 +6,10 @@ import discord
 import sys
 import time
 
-import internal_working_bot_newer
+import working_bot_newer
 from token_cc import token
 
-WAIT_TIME_SECONDS = 60 * 10
+WAIT_TIME_SECONDS = 60 * 60
 
 
 class ProgramKilled(Exception):
@@ -48,7 +48,7 @@ class Job(threading.Thread):
 
 
 client = discord.Client()
-obJ_class = internal_working_bot_newer.ExecFaster()
+obJ_class = working_bot_newer.ExecFaster()
 
 
 @client.event
@@ -72,26 +72,24 @@ async def on_message(message):
         text = message.content
         text = text.split(' ')
         name = text[1]
-        time_t = text[2]
+        time = text[2]
         stat = text[3]
         name = name.title()
-        link_s, response = obJ_class.show_by_name(name, time_t, stat)
+        print("Requested: " + name + "Time Zone: " + time + "Showing: " + stat)
+        link_s, response = obJ_class.show_by_name(name, time, stat)
+        print(link_s, response)
         await message.channel.send(response)
-        size = len(link_s)  # number of links to process
-        list_of_titles_and_thumbs = []
-        '''The new idea is to use the vid as the key of the dictionary 
-        that will have the thumbs and video tiles and it will be made by the __init__ not here then when necessary
-        the key can be used here to get the values and make the embed'''
-        for link in link_s:
-            list_of_titles_and_thumbs.append(obJ_class.video_details(link[7:-1]))
-        print(list_of_titles_and_thumbs)
         embed = discord.Embed(title='Video')
-        for row in range(0, size):
-            print(list_of_titles_and_thumbs[row])
-            embed.add_field(name=list_of_titles_and_thumbs[row][0], value='[Vid](' + link_s[row] + ')', inline=True)
-            embed.set_image(url=list_of_titles_and_thumbs[row][1])
-            await message.channel.send(embed=embed)
-            embed.clear_fields()
+        size = len(link_s)
+        print("Number of entries =" + str(size))
+        for link in link_s:
+            for sub_l in obJ_class.list_of_titles_and_thumbs:
+                if link in sub_l:
+                    embed.add_field(name=sub_l[1], value='[Vid](' + link + ')',
+                                    inline=True)
+                    embed.set_image(url=sub_l[2])
+                    await message.channel.send(embed=embed)
+                    embed.clear_fields()
 
     if message.content.startswith("&&exit"):
         await message.channel.send("Exiting")
