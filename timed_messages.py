@@ -6,7 +6,7 @@ import discord
 import sys
 import time
 
-import bot_with_embeds
+import internal_working_bot_newer
 from token_cc import token
 
 WAIT_TIME_SECONDS = 60 * 10
@@ -48,7 +48,7 @@ class Job(threading.Thread):
 
 
 client = discord.Client()
-obJ_class = bot_with_embeds.ExecFaster()
+obJ_class = internal_working_bot_newer.ExecFaster()
 
 
 @client.event

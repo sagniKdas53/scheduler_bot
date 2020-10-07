@@ -1,15 +1,11 @@
 import csv
-import json
 import re
 from datetime import datetime
-from urllib import request, parse
 
 import pytz
 import requests
 import tabulate
 from bs4 import BeautifulSoup as _soup_
-
-'''Here i will write the functions that could and would be imported in the bot finally'''
 
 
 class ExecFaster:
@@ -38,8 +34,6 @@ class ExecFaster:
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
         self.data = self.start_reading(self.checked_f)  # parses it
         self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # translates it
-        # self.list_link_s = self.video_details_all(self.trans_d)
-        # print(self.list_link_s)
 
     def show_in_time_zone(self, time_x):
         out_pt = self._convert_to_local_object(self.trans_d, time_x, 'show_all',
@@ -57,6 +51,7 @@ class ExecFaster:
 
     def _convert_to_local_object(self, file, time_z, name, show_all):
         list_table = []
+        # list_details = []
         link_list = []
         indX = 0
         source_time_zone = pytz.timezone("Asia/Tokyo")
@@ -85,7 +80,6 @@ class ExecFaster:
                 indX += 1
 
         table = tabulate.tabulate(list_table, headers=['Index', 'Name', 'Status', 'Hour', 'Minute'], tablefmt="plain")
-        print(link_list)
         return link_list, table
 
     @classmethod
@@ -95,7 +89,6 @@ class ExecFaster:
         ms = 0
         return_f = []
         flip_soup = _soup_(file_content, "html.parser")
-        # f.close()
         containers_date = flip_soup.find_all('div', class_="holodule navbar-text")
         containers_link = flip_soup.find_all('a', class_="thumbnail")
         for dates in containers_date:
@@ -104,6 +97,7 @@ class ExecFaster:
         print("Schedule contains: ")
         for month, day in day_list:
             print("{}/{},".format(month, day), end='')
+        # f = open("export.csv", "w", encoding='utf8')
         return_f.append('MON,DAY,ID,HR,MN,NAME\n')
         for k in range(0, len(containers_link)):
             match = re.findall(r'href=\"https:[//]*www\.youtube\.com/watch\?v=([0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]*)\"',
@@ -122,35 +116,6 @@ class ExecFaster:
                                                              hr[0], hr[1], time_name[1], '\n'))
                 hold = [int(hr[0]), int(hr[1])]
         return return_f
-
-    @classmethod
-    def video_details(cls, vid):
-        params = {"format": "json", "url": vid}
-        url = "https://www.youtube.com/oembed"
-        query_string = parse.urlencode(params)
-        url = url + "?" + query_string
-        with request.urlopen(url) as response:
-            response_text = response.read()
-            data = json.loads(response_text.decode())
-            details = [data['title'], data['thumbnail_url']]
-        return details
-
-    @classmethod
-    def video_details_all(cls, file):
-        reader = csv.DictReader(file)
-        list_id = []
-        for row in reader:
-            data = (row['MON'], row['DAY'], row['ID'], row['HR'], row['MN'], row['NAME'])  # MON,DAY,ID,HR,MN,NAME
-            vid = data[2]  # this only contains the id
-            params = {"format": "json", "url": vid}
-            url = "https://www.youtube.com/oembed"
-            query_string = parse.urlencode(params)
-            url = url + "?" + query_string
-            with request.urlopen(url) as response:
-                response_text = response.read()
-                data = json.loads(response_text.decode())
-                list_id.append([data['title'], data['thumbnail_url']])
-        return list_id
 
     def time_left(self, full_inp):
         self.now = datetime.now()
@@ -172,7 +137,6 @@ class ExecFaster:
 
     def update(self):
         self.now = datetime.now()
-        # make_file_html(file_name, False)
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
         self.data = self.start_reading(self.checked_f)  # parses it
         self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # translates it
