@@ -1,8 +1,6 @@
 import csv
-import json
 import re
 from datetime import datetime
-from urllib import request, parse
 
 import pytz
 import requests
@@ -29,7 +27,6 @@ class ExecFaster:
     data = None
     trans_d = None
     now = None
-    list_of_titles_and_thumbs = []
     list_url = []
 
     def __init__(self):
@@ -37,24 +34,22 @@ class ExecFaster:
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
         self.data = self.start_reading(self.checked_f)  # parses it
         self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # translates it
-        self.list_of_titles_and_thumbs = self.video_details(self.list_url)
-        print(self.list_of_titles_and_thumbs)
 
     def show_in_time_zone(self, time_x):
-        out_pt = self._convert_to_local_object(self.trans_d, time_x, 'show_all',
-                                               True)  # takes in export_translated.csv and time zone
+        out_pt = self._generate_output_(self.trans_d, time_x, 'show_all',
+                                        True)  # takes in export_translated.csv and time zone
         print(out_pt)  # table of names and status in input time zone.
 
     def show_by_name(self, name_to_show, time_x, boole):
         if boole == 'not_over':
-            out_pt = self._convert_to_local_object(self.trans_d, time_x,
-                                                   name_to_show, False)
+            out_pt = self._generate_output_(self.trans_d, time_x,
+                                            name_to_show, False)
         else:
-            out_pt = self._convert_to_local_object(self.trans_d, time_x,
-                                                   name_to_show, True)
+            out_pt = self._generate_output_(self.trans_d, time_x,
+                                            name_to_show, True)
         return out_pt  # table of names and status in input time zone.
 
-    def _convert_to_local_object(self, file, time_z, name, show_all):
+    def _generate_output_(self, file, time_z, name, show_all):
         list_table = []
         link_list = []
         indX = 0
@@ -68,21 +63,27 @@ class ExecFaster:
             source_link = '[Link](' + data[2] + ')'
             source_hour = data[3]
             source_min = data[4]
+            source_stat = data[6]
             source_time = datetime(int(self.now.year), int(source_mon), int(source_day), int(source_hour),
                                    int(source_min), 00, 0000)
             source_date_with_timezone = source_time_zone.localize(source_time)
             val = self.time_left(source_date_with_timezone)
             target_time_zone = pytz.timezone(time_z)
-            writer = source_date_with_timezone.astimezone(target_time_zone)
-            if name == 'All' or name == data[5]:
-                if val.days < 0:
-                    if show_all:
-                        list_table.append([indX, data[5], "Over", writer.hour, writer.minute])
+            time_ob = source_date_with_timezone.astimezone(target_time_zone)
+            if source_stat == "NOT":
+                if name == 'All' or name == data[5]:
+                    if val.days < 0:
+                        if show_all:
+                            list_table.append([indX, data[5], "OVER", time_ob.hour, time_ob.minute])
+                            link_list.append(source_link)
+                    else:
+                        list_table.append([indX, data[5], str(val)[0:7], time_ob.hour, time_ob.minute])
                         link_list.append(source_link)
-                else:
-                    list_table.append([indX, data[5], str(val)[0:7], writer.hour, writer.minute])
+            elif source_stat == "LIVE":
+                if name == 'All' or name == data[5]:
+                    list_table.append([indX, data[5], "LIVE NOW", time_ob.hour, time_ob.minute])
                     link_list.append(source_link)
-                indX += 1
+            indX += 1
 
         table = tabulate.tabulate(list_table, headers=['Index', 'Name', 'Status', 'Hour', 'Minute'], tablefmt="plain")
         print(link_list)
@@ -93,10 +94,8 @@ class ExecFaster:
         day_list = []
         hold = [0, 0]
         ms = 0
-        live = ''
         return_f = []
         flip_soup = _soup_(file_content, "html.parser")
-        # f.close()
         containers_date = flip_soup.find_all('div', class_="holodule navbar-text")
         containers_link = flip_soup.find_all('a', class_="thumbnail")
         for dates in containers_date:
@@ -126,25 +125,11 @@ class ExecFaster:
                                                                 hr[0], hr[1], time_name[1], live, '\n'))
                 hold = [int(hr[0]), int(hr[1])]
             else:
-                return_f.append('{},{},{},{},{},{}{}'.format(day_list[ms][0], day_list[ms][1],
-                                                             match,
-                                                             hr[0], hr[1], time_name[1], live, '\n'))
+                return_f.append('{},{},{},{},{},{},{}{}'.format(day_list[ms][0], day_list[ms][1],
+                                                                match,
+                                                                hr[0], hr[1], time_name[1], live, '\n'))
                 hold = [int(hr[0]), int(hr[1])]
         return return_f
-
-    @classmethod
-    def video_details(cls, video):
-        details = []
-        for vid in video:
-            params = {"format": "json", "url": vid}
-            url = "https://www.youtube.com/oembed"
-            query_string = parse.urlencode(params)
-            url = url + "?" + query_string
-            with request.urlopen(url) as response:
-                response_text = response.read()
-                data = json.loads(response_text.decode())
-                details.append([vid, data['title'], data['thumbnail_url']])
-        return details
 
     def time_left(self, full_inp):
         self.now = datetime.now()
@@ -164,20 +149,8 @@ class ExecFaster:
                     file[idx] = ele.replace(key, val)
         return file
 
-    @classmethod
-    def check_live(cls, vid):
-        pg = requests.get(vid).content
-        pg_soup = _soup_(pg, "html.parser")
-        viewers = pg_soup.find_all('div', class_="view-count style-scope yt-view-count-renderer")
-        print(viewers)
-        if viewers:
-            return True
-        else:
-            return False
-
     def update(self):
         self.now = datetime.now()
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
         self.data = self.start_reading(self.checked_f)  # parses it
         self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # translates it
-        self.list_of_titles_and_thumbs = self.video_details(self.list_url)

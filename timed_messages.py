@@ -1,3 +1,12 @@
+'''
+NOW THIS IS THE MAIN ONE.
+this script is supposed to run every hour and update the object
+this also the upadte can be donr by && upadte
+the main differnce is that the embeds are made by me not discord, why? because i wanted to impose a limit on the number
+of vidoes shown, i only want to show the previews of live ones also the link if sent as part of the table look cluttey
+so i am working on making it look nice.
+'''
+
 import signal
 import threading
 from datetime import timedelta
@@ -72,11 +81,11 @@ async def on_message(message):
         text = message.content
         text = text.split(' ')
         name = text[1]
-        time = text[2]
+        time_z = text[2]
         stat = text[3]
         name = name.title()
-        print("Requested: " + name + "Time Zone: " + time + "Showing: " + stat)
-        link_s, response = obJ_class.show_by_name(name, time, stat)
+        print("Requested: " + name + "Time Zone: " + time_z + "Showing: " + stat)
+        link_s, response = obJ_class.show_by_name(name, time_z, stat)
         print(link_s, response)
         await message.channel.send(response)
         embed = discord.Embed(title='Video')
@@ -86,7 +95,7 @@ async def on_message(message):
             for sub_l in obJ_class.list_of_titles_and_thumbs:
                 if link in sub_l:
                     embed.add_field(name=sub_l[1], value='[Vid](' + link + ')',
-                                    inline=True)
+                                    inline=True)  # somthing is wrong here i can't rember what it is tho
                     embed.set_image(url=sub_l[2])
                     await message.channel.send(embed=embed)
                     embed.clear_fields()
@@ -95,6 +104,7 @@ async def on_message(message):
         await message.channel.send("Exiting")
         await client.close()
         print("Successfully logged out")
+        sys.exit(0)
     if message.content.startswith("&&update"):
         await message.channel.send("Wait a few seconds")
         obJ_class.update()
