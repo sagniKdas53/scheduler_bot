@@ -29,8 +29,8 @@ class ExecFaster:
     data = None
     trans_d = None
     now = None
-    list_of_titles_and_thumbs = None
-    list_url = None
+    list_of_titles_and_thumbs = []
+    list_url = []
 
     def __init__(self):
         self.now = datetime.now()
@@ -61,7 +61,8 @@ class ExecFaster:
         source_time_zone = pytz.timezone("Asia/Tokyo")
         reader = csv.DictReader(file)
         for row in reader:
-            data = (row['MON'], row['DAY'], row['URL'], row['HR'], row['MN'], row['NAME'])  # MON,DAY,ID,HR,MN,NAME
+            data = (row['MON'], row['DAY'], row['URL'], row['HR'], row['MN'], row['NAME'], row['LIVE'])  # MON,DAY,ID,HR
+            # ,MN,NAME, LIVE
             source_mon = data[0]
             source_day = data[1]
             source_link = '[Link](' + data[2] + ')'
@@ -92,6 +93,7 @@ class ExecFaster:
         day_list = []
         hold = [0, 0]
         ms = 0
+        live = ''
         return_f = []
         flip_soup = _soup_(file_content, "html.parser")
         # f.close()
@@ -103,23 +105,30 @@ class ExecFaster:
         print("Schedule contains: ")
         for month, day in day_list:
             print("{}/{},".format(month, day), end='')
-        return_f.append('MON,DAY,URL,HR,MN,NAME\n')
+        print('\n\n')
+        return_f.append('MON,DAY,URL,HR,MN,NAME,LIVE\n')
         for k in range(0, len(containers_link)):
             match = re.findall(r'href=\"(https:[//]*www\.youtube\.com/watch\?v=[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]*)\"',
                                str(containers_link[k]))[0]
+            match_S = re.findall(r'border:( 3px red solid| 0)',
+                                 str(containers_link[k]))[0]
+            if match_S == ' 3px red solid':
+                live = "LIVE"
+            else:
+                live = "NOT"
             cls.list_url.append(match)
             time_name = containers_link[k].text.replace(' ', '').split()
             hr = time_name[0].split(':')
             if int(hr[0]) != 23 and int(hr[1]) <= 59 and hold[0] == 23:
                 ms += 1
-                return_f.append('{},{},{},{},{},{}{}'.format(day_list[ms][0], day_list[ms][1],
-                                                             match,
-                                                             hr[0], hr[1], time_name[1], '\n'))
+                return_f.append('{},{},{},{},{},{},{}{}'.format(day_list[ms][0], day_list[ms][1],
+                                                                match,
+                                                                hr[0], hr[1], time_name[1], live, '\n'))
                 hold = [int(hr[0]), int(hr[1])]
             else:
                 return_f.append('{},{},{},{},{},{}{}'.format(day_list[ms][0], day_list[ms][1],
                                                              match,
-                                                             hr[0], hr[1], time_name[1], '\n'))
+                                                             hr[0], hr[1], time_name[1], live, '\n'))
                 hold = [int(hr[0]), int(hr[1])]
         return return_f
 
@@ -154,6 +163,17 @@ class ExecFaster:
                 if key in ele:
                     file[idx] = ele.replace(key, val)
         return file
+
+    @classmethod
+    def check_live(cls, vid):
+        pg = requests.get(vid).content
+        pg_soup = _soup_(pg, "html.parser")
+        viewers = pg_soup.find_all('div', class_="view-count style-scope yt-view-count-renderer")
+        print(viewers)
+        if viewers:
+            return True
+        else:
+            return False
 
     def update(self):
         self.now = datetime.now()
