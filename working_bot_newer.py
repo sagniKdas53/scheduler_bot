@@ -38,6 +38,7 @@ class ExecFaster:
         self.data = self.start_reading(self.checked_f)  # parses it
         self.video_details(self.list_url)
         self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # translates it
+        print("Initialized")
 
     def show_in_time_zone(self, time_x):
         out_pt = self._generate_output_(self.trans_d, time_x, 'show_all',
@@ -91,7 +92,7 @@ class ExecFaster:
 
         table = tabulate.tabulate(list_table, headers=['Index', 'Name', 'Status', 'Hour', 'Minute'], tablefmt="plain")
         print(link_list)
-        return link_list, table, self.now
+        return link_list, table
 
     @classmethod
     def start_reading(cls, file_content):
@@ -156,7 +157,8 @@ class ExecFaster:
                 response_text = response.read()
                 data = json.loads(response_text.decode())
                 details = [data['title'], data['thumbnail_url']]
-            cls.list_of_titles_and_thumbs.append(details)
+                print(details)
+                cls.list_of_titles_and_thumbs.append(details)
 
     @classmethod
     def translate_export(cls, file, orig, tran):
@@ -175,3 +177,4 @@ class ExecFaster:
         self.data = self.start_reading(self.checked_f)  # parses it
         self.video_details(self.list_url)
         self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # translates it
+        print("RE-Initialized")

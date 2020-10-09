@@ -83,11 +83,11 @@ async def on_message(message):
         time_z = text[2]
         stat = text[3]
         name = name.title()
-        print("Requested: " + name + "Time Zone: " + time_z + "Showing: " + stat)
-        link_s, response, last_up = obJ_class.show_by_name(name, time_z, stat)
-        # print(link_s, response)
+        print("Requested: " + name + " Time Zone: " + time_z + " Showing: " + stat)
+        link_s, response = obJ_class.show_by_name(name, time_z, stat)
+        print(link_s, response)
         await message.channel.send(response)
-        embed = discord.Embed(title='LIST')
+    """    embed = discord.Embed(title='LIST')
         size = len(link_s)
         print("Number of entries =" + str(size))
         for link in link_s:
@@ -98,14 +98,27 @@ async def on_message(message):
                     embed.set_image(url=sub_l[2])
                     await message.channel.send(embed=embed)
                     embed.clear_fields()
-
+    $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+    embed = discord.Embed(title='Video')
+        for row in range(0, size):
+            print(list_of_titles_and_thumbs[row])
+            embed.add_field(name=list_of_titles_and_thumbs[row][0], value='[Vid](' + test_list[row] + ')', inline=True)
+            embed.set_image(url=list_of_titles_and_thumbs[row][1])
+            await message.channel.send(embed=embed)
+            embed.clear_fields()
+    """
     if message.content.startswith("&&exit"):
         await message.channel.send("Exiting")
         await client.close()
         print("Successfully logged out")
-        sys.exit(0)
+        job.stop()
+        # sys.exit(0)
+
+    if message.content.startswith("&&age"):
+        await message.channel.send('Last updated:' + obJ_class.now)
+
     if message.content.startswith("&&update"):
-        await message.channel.send("Wait a few seconds")
+        await message.channel.send("Wait a minute")
         obJ_class.update()
 
     elif message.content == 'raise-exception':
@@ -127,5 +140,3 @@ print(time.ctime())
 job = Job(interval=timedelta(seconds=WAIT_TIME_SECONDS), execute=update_demon)
 job.start()
 client.run(token(), bot=True)
-print("Bot Exited")
-job.stop()
