@@ -56,8 +56,8 @@ class ExecFaster:
         source_time_zone = pytz.timezone("Asia/Tokyo")
         reader = csv.DictReader(file)
         for row in reader:
-            data = (row['MON'], row['DAY'], row['URL'], row['HR'], row['MN'], row['NAME'], row['LIVE'])  # MON,DAY,ID,HR
-            # ,MN,NAME, LIVE
+            data = (row['MON'], row['DAY'], row['URL'], row['HR'], row['MN'], row['NAME'], row['LIVE'],
+                    row['THUMBNAIL_URL'])  # MON,DAY,ID,HR,MN,NAME,LIVE,THUMBNAIL_URL
             source_mon = data[0]
             source_day = data[1]
             source_link = '[Link](' + data[2] + ')'
@@ -87,7 +87,7 @@ class ExecFaster:
 
         table = tabulate.tabulate(list_table, headers=['Index', 'Name', 'Status', 'Hour', 'Minute'], tablefmt="plain")
         print(link_list)
-        return link_list, table
+        return link_list, table, self.now
 
     @classmethod
     def start_reading(cls, file_content):
@@ -105,12 +105,15 @@ class ExecFaster:
         for month, day in day_list:
             print("{}/{},".format(month, day), end='')
         print('\n\n')
-        return_f.append('MON,DAY,URL,HR,MN,NAME,LIVE\n')
+        return_f.append('MON,DAY,URL,HR,MN,NAME,LIVE,THUMBNAIL_URL\n')
         for k in range(0, len(containers_link)):
             match = re.findall(r'href=\"(https:[//]*www\.youtube\.com/watch\?v=[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]*)\"',
                                str(containers_link[k]))[0]
             match_S = re.findall(r'border:( 3px red solid| 0)',
                                  str(containers_link[k]))[0]
+            match_thumb = re.findall(r'https://img\.youtube\.com/vi/[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]*/',
+                                     str(containers_link[k]))[
+                              0] + 'hqdefault.jpg"'  # add this to the db too this can be used in embeds later
             if match_S == ' 3px red solid':
                 live = "LIVE"
             else:
@@ -120,14 +123,14 @@ class ExecFaster:
             hr = time_name[0].split(':')
             if int(hr[0]) != 23 and int(hr[1]) <= 59 and hold[0] == 23:
                 ms += 1
-                return_f.append('{},{},{},{},{},{},{}{}'.format(day_list[ms][0], day_list[ms][1],
-                                                                match,
-                                                                hr[0], hr[1], time_name[1], live, '\n'))
+                return_f.append('{},{},{},{},{},{},{},{}{}'.format(day_list[ms][0], day_list[ms][1],
+                                                                   match,
+                                                                   hr[0], hr[1], time_name[1], live, match_thumb, '\n'))
                 hold = [int(hr[0]), int(hr[1])]
             else:
-                return_f.append('{},{},{},{},{},{},{}{}'.format(day_list[ms][0], day_list[ms][1],
-                                                                match,
-                                                                hr[0], hr[1], time_name[1], live, '\n'))
+                return_f.append('{},{},{},{},{},{},{},{}{}'.format(day_list[ms][0], day_list[ms][1],
+                                                                   match,
+                                                                   hr[0], hr[1], time_name[1], live, match_thumb, '\n'))
                 hold = [int(hr[0]), int(hr[1])]
         return return_f
 

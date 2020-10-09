@@ -1,12 +1,11 @@
-'''
+"""
 NOW THIS IS THE MAIN ONE.
 this script is supposed to run every hour and update the object
-this also the upadte can be donr by && upadte
-the main differnce is that the embeds are made by me not discord, why? because i wanted to impose a limit on the number
-of vidoes shown, i only want to show the previews of live ones also the link if sent as part of the table look cluttey
+this also the update can be done by && update
+the main difference is that the embeds are made by me not discord, why? because i wanted to impose a limit on the number
+of videos shown, i only want to show the previews of live ones also the link if sent as part of the table look cluttered
 so i am working on making it look nice.
-'''
-
+"""
 import signal
 import threading
 from datetime import timedelta
@@ -18,7 +17,7 @@ import time
 import working_bot_newer
 from token_cc import token
 
-WAIT_TIME_SECONDS = 60 * 60
+WAIT_TIME_SECONDS = 60 * 60 * 4  # 4 hours should be enough?
 
 
 class ProgramKilled(Exception):
@@ -85,17 +84,17 @@ async def on_message(message):
         stat = text[3]
         name = name.title()
         print("Requested: " + name + "Time Zone: " + time_z + "Showing: " + stat)
-        link_s, response = obJ_class.show_by_name(name, time_z, stat)
-        print(link_s, response)
+        link_s, response, last_up = obJ_class.show_by_name(name, time_z, stat)
+        # print(link_s, response)
         await message.channel.send(response)
-        embed = discord.Embed(title='Video')
+        embed = discord.Embed(title='LIST')
         size = len(link_s)
         print("Number of entries =" + str(size))
         for link in link_s:
             for sub_l in obJ_class.list_of_titles_and_thumbs:
                 if link in sub_l:
-                    embed.add_field(name=sub_l[1], value='[Vid](' + link + ')',
-                                    inline=True)  # somthing is wrong here i can't rember what it is tho
+                    embed.add_field(name=sub_l[1], value='[Video](' + link + ')',
+                                    inline=True)  # something is wrong here i can't remember what it is tho
                     embed.set_image(url=sub_l[2])
                     await message.channel.send(embed=embed)
                     embed.clear_fields()
@@ -128,11 +127,5 @@ print(time.ctime())
 job = Job(interval=timedelta(seconds=WAIT_TIME_SECONDS), execute=update_demon)
 job.start()
 client.run(token(), bot=True)
-
-while True:
-    try:
-        time.sleep(WAIT_TIME_SECONDS)
-    except ProgramKilled:
-        print("Program killed")
-        job.stop()
-        break
+print("Bot Exited")
+job.stop()
