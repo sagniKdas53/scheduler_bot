@@ -1,6 +1,8 @@
 import csv
+import json
 import re
 from datetime import datetime
+from urllib import request, parse
 
 import pytz
 import requests
@@ -28,11 +30,13 @@ class ExecFaster:
     trans_d = None
     now = None
     list_url = []
+    list_of_titles_and_thumbs = []
 
     def __init__(self):
         self.now = datetime.now()
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
         self.data = self.start_reading(self.checked_f)  # parses it
+        self.video_details(self.list_url)
         self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # translates it
 
     def show_in_time_zone(self, time_x):
@@ -56,8 +60,8 @@ class ExecFaster:
         source_time_zone = pytz.timezone("Asia/Tokyo")
         reader = csv.DictReader(file)
         for row in reader:
-            data = (row['MON'], row['DAY'], row['URL'], row['HR'], row['MN'], row['NAME'], row['LIVE'],
-                    row['THUMBNAIL_URL'])  # MON,DAY,ID,HR,MN,NAME,LIVE,THUMBNAIL_URL
+            data = (row['MON'], row['DAY'], row['URL'], row['HR'], row['MN'], row['NAME'], row['LIVE'])
+            # MON,DAY,ID,HR,MN,NAME,LIVE,THUMBNAIL_URL
             source_mon = data[0]
             source_day = data[1]
             source_link = '[Link](' + data[2] + ')'
@@ -112,8 +116,8 @@ class ExecFaster:
             match_S = re.findall(r'border:( 3px red solid| 0)',
                                  str(containers_link[k]))[0]
             match_thumb = re.findall(r'https://img\.youtube\.com/vi/[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]*/',
-                                     str(containers_link[k]))[
-                              0] + 'hqdefault.jpg"'  # add this to the db too this can be used in embeds later
+                                     str(containers_link[k]))[0] + 'hqdefault.jpg'
+            # add this to the db, this can be used in embeds later probably won't be
             if match_S == ' 3px red solid':
                 live = "LIVE"
             else:
@@ -142,6 +146,19 @@ class ExecFaster:
         return left
 
     @classmethod
+    def video_details(cls, video):
+        for vid in video:
+            params = {"format": "json", "url": vid}
+            url = "https://www.youtube.com/oembed"
+            query_string = parse.urlencode(params)
+            url = url + "?" + query_string
+            with request.urlopen(url) as response:
+                response_text = response.read()
+                data = json.loads(response_text.decode())
+                details = [data['title'], data['thumbnail_url']]
+            cls.list_of_titles_and_thumbs.append(details)
+
+    @classmethod
     def translate_export(cls, file, orig, tran):
         dict_name = {}
         for ele in range(len(orig)):
@@ -156,4 +173,5 @@ class ExecFaster:
         self.now = datetime.now()
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
         self.data = self.start_reading(self.checked_f)  # parses it
+        self.video_details(self.list_url)
         self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # translates it
