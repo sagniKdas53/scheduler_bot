@@ -7,12 +7,12 @@ of videos shown, i only want to show the previews of live ones also the link if 
 so i am working on making it look nice.
 """
 import signal
+import sys
 import threading
+import time
 from datetime import timedelta
 
 import discord
-import sys
-import time
 
 import working_bot_newer
 from token_cc import token
@@ -85,28 +85,30 @@ async def on_message(message):
         name = name.title()
         print("Requested: " + name + " Time Zone: " + time_z + " Showing: " + stat)
         link_s, response = obJ_class.show_by_name(name, time_z, stat)
-        print(link_s, response)
+        print(link_s, '\n\n', response)
         await message.channel.send(response)
-    """    embed = discord.Embed(title='LIST')
-        size = len(link_s)
-        print("Number of entries =" + str(size))
-        for link in link_s:
-            for sub_l in obJ_class.list_of_titles_and_thumbs:
-                if link in sub_l:
-                    embed.add_field(name=sub_l[1], value='[Video](' + link + ')',
-                                    inline=True)  # something is wrong here i can't remember what it is tho
-                    embed.set_image(url=sub_l[2])
+
+    if message.content.startswith("&&sendc"):
+        text = message.content
+        text = text.split(' ')
+        name = text[1]
+        time_z = text[2]
+        stat = text[3]
+        name = name.title()
+        print("Requested: " + name + " Time Zone: " + time_z + " Showing: " + stat)
+        link_s, response = obJ_class.show_by_name(name, time_z, stat)
+        print(link_s, '\n\n', response)
+        await message.channel.send(response)
+        embed = discord.Embed(title='Video')
+        for item in link_s:
+            for data in obJ_class.list_of_titles_and_thumbs:
+                if item[0][7:-1] == data[0]:
+                    print(data)
+                    embed.add_field(name=data[1], value=item[0], inline=True)
+                    embed.set_image(url=data[2])
                     await message.channel.send(embed=embed)
                     embed.clear_fields()
-    $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-    embed = discord.Embed(title='Video')
-        for row in range(0, size):
-            print(list_of_titles_and_thumbs[row])
-            embed.add_field(name=list_of_titles_and_thumbs[row][0], value='[Vid](' + test_list[row] + ')', inline=True)
-            embed.set_image(url=list_of_titles_and_thumbs[row][1])
-            await message.channel.send(embed=embed)
-            embed.clear_fields()
-    """
+
     if message.content.startswith("&&exit"):
         await message.channel.send("Exiting")
         await client.close()

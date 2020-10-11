@@ -6,12 +6,12 @@ client = discord.Client()
 
 test_list = ['https://www.youtube.com/watch?v=A67ZkAd1wmI', 'https://www.youtube.com/watch?v=spi6yOS6zy4',
              'https://www.youtube.com/watch?v=FuxGgJ7Ntts']
-list_of_det = [[['Caramella Girls - Caramelldansen (Official English Version)',
-                 'https://i.ytimg.com/vi/A67ZkAd1wmI/hqdefault.jpg']],
-               [['SEISO 『Doja Cat "Say So" parody cover』',
-                 'https://i.ytimg.com/vi/spi6yOS6zy4/hqdefault.jpg']],
-               [['kyOresu - Pumped up Kicks (cover)',
-                 'https://i.ytimg.com/vi/FuxGgJ7Ntts/hqdefault.jpg']]]
+list_of_det = [
+    [['Caramella Girls - Caramelldansen (Official English Version)',
+      'https://i.ytimg.com/vi/A67ZkAd1wmI/hqdefault.jpg']],
+    [['SEISO 『Doja Cat "Say So" parody cover』', 'https://i.ytimg.com/vi/spi6yOS6zy4/hqdefault.jpg']],
+    [['kyOresu - Pumped up Kicks (cover)', 'https://i.ytimg.com/vi/FuxGgJ7Ntts/hqdefault.jpg']]
+]
 
 list_of_titles_and_thumbs = [['Caramella Girls - Caramelldansen (Official English Version)',
                               'https://i.ytimg.com/vi/A67ZkAd1wmI/hqdefault.jpg'],

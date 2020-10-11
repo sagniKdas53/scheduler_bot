@@ -1,6 +1,7 @@
 import csv
 import json
 import re
+import time
 from datetime import datetime
 from urllib import request, parse
 
@@ -153,11 +154,18 @@ class ExecFaster:
             url = "https://www.youtube.com/oembed"
             query_string = parse.urlencode(params)
             url = url + "?" + query_string
-            with request.urlopen(url) as response:
-                response_text = response.read()
-                data = json.loads(response_text.decode())
-                details = [data['title'], data['thumbnail_url']]
-                print(details)
+            print(url)
+            try:
+                with request.urlopen(url) as response:
+                    response_text = response.read()
+                    data = json.loads(response_text.decode())
+                    details = [vid, data['title'], data['thumbnail_url']]
+                    print(details)
+                    cls.list_of_titles_and_thumbs.append(details)
+                    time.sleep(1)
+            except Exception as e:
+                print(e)
+                details = [vid, 'title', 'thumbnail_url']
                 cls.list_of_titles_and_thumbs.append(details)
 
     @classmethod
