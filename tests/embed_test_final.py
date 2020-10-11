@@ -97,13 +97,11 @@ list_of_titles_and_thumbs = [['【ブレイブルー】続\u3000武\u3000者\u30
     ,
                              ['【Celebration】6month and 100K Thankyou!  - ID | EN【Moona】',
                               'https://i.ytimg.com/vi/aS4yelfhPq4/hqdefault.jpg']
-    ,
-                             ['【 #アランストリーム 】深夜のアルラジオ#11【アルランディス/ホロスターズ】',
-                              'https://i.ytimg.com/vi/48TDTk74aQc/hqdefault.jpg']
-    ,
-                             ['【歌枠】歌うぞ～～～～～～～～【桃鈴ねね/ホロライブ】', 'https://i.ytimg.com/vi/9C5CZ7hdcAo/hqdefault.jpg']
-
+    , ['【 #アランストリーム 】深夜のアルラジオ#11【アルランディス/ホロスターズ】',
+       'https://i.ytimg.com/vi/48TDTk74aQc/hqdefault.jpg']
+    , ['【歌枠】歌うぞ～～～～～～～～【桃鈴ねね/ホロライブ】', 'https://i.ytimg.com/vi/9C5CZ7hdcAo/hqdefault.jpg']
     , ['https://www.youtube.com/watch?v=X4YCslrdvyc', '【耐久SP 】３５万人記念にみんなで出すぞ３５万ダメージ！！APEX参加型#2【ホロライブ/ロボ子さん】',
+       # this is the only live that's correct
        'https://i.ytimg.com/vi/XFO_4O-aBGM/hqdefault.jpg']
     , ['【アソビ大全】るしあ先輩と今日はアソビつくす大全！【ホロライブ/#るししし】', 'https://i.ytimg.com/vi/NKFFXwZx8hw/hqdefault.jpg']
     , ['【ASMR耳元雑談】新作歌ってみた同時視聴！【Hololive/Akirose】', 'https://i.ytimg.com/vi/96sBSzSp19o/hqdefault.jpg']
@@ -159,15 +157,14 @@ embed = discord.Embed(title='Video')
         embed.set_image(url=list_of_titles_and_thumbs[row][1])
         await message.channel.send(embed=embed)
         embed.clear_fields()
-"""
-
-'''if message.content.startswith("&&testC"):
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+if message.content.startswith("&&testC"):
     embed = discord.Embed(title='Video')
     for row in range(0, size):
         print(list_of_titles_and_thumbs[row])
         embed.add_field(name=list_of_titles_and_thumbs[row][0], value='[Vid](' + test_list[row] + ')', inline=True)
         embed.set_image(url=list_of_titles_and_thumbs[row][1])
         await message.channel.send(embed=embed)
-        embed.clear_fields()'''
+        embed.clear_fields()"""
 
 client.run(token(), bot=True)

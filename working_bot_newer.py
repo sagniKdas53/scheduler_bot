@@ -150,6 +150,7 @@ class ExecFaster:
     @classmethod
     def video_details(cls, video):
         for vid in video:
+            print(vid)
             params = {"format": "json", "url": vid}
             url = "https://www.youtube.com/oembed"
             query_string = parse.urlencode(params)
@@ -165,8 +166,9 @@ class ExecFaster:
                     time.sleep(1)
             except Exception as e:
                 print(e)
-                details = [vid, 'title', 'thumbnail_url']
+                details = [vid, 'ERROR', 'ERROR']
                 cls.list_of_titles_and_thumbs.append(details)
+        print(cls.list_of_titles_and_thumbs)
 
     @classmethod
     def translate_export(cls, file, orig, tran):
