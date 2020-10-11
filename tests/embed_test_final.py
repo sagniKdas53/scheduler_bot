@@ -142,7 +142,7 @@ async def on_message(message):
     size = len(link_s)
     print("Number of entries =" + str(size))
     for link in link_s:
-        for sub_l in obJ_class.list_of_titles_and_thumbs:
+        for sub_l in obJ_class.titles_and_thumbs:
             if link in sub_l:
                 embed.add_field(name=sub_l[1], value='[Video](' + link + ')',
                                 inline=True)  # something is wrong here i can't remember what it is tho
@@ -152,18 +152,18 @@ async def on_message(message):
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 embed = discord.Embed(title='Video')
     for row in range(0, size):
-        print(list_of_titles_and_thumbs[row])
-        embed.add_field(name=list_of_titles_and_thumbs[row][0], value='[Vid](' + test_list[row] + ')', inline=True)
-        embed.set_image(url=list_of_titles_and_thumbs[row][1])
+        print(titles_and_thumbs[row])
+        embed.add_field(name=titles_and_thumbs[row][0], value='[Vid](' + test_list[row] + ')', inline=True)
+        embed.set_image(url=titles_and_thumbs[row][1])
         await message.channel.send(embed=embed)
         embed.clear_fields()
 $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 if message.content.startswith("&&testC"):
     embed = discord.Embed(title='Video')
     for row in range(0, size):
-        print(list_of_titles_and_thumbs[row])
-        embed.add_field(name=list_of_titles_and_thumbs[row][0], value='[Vid](' + test_list[row] + ')', inline=True)
-        embed.set_image(url=list_of_titles_and_thumbs[row][1])
+        print(titles_and_thumbs[row])
+        embed.add_field(name=titles_and_thumbs[row][0], value='[Vid](' + test_list[row] + ')', inline=True)
+        embed.set_image(url=titles_and_thumbs[row][1])
         await message.channel.send(embed=embed)
         embed.clear_fields()"""
 

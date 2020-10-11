@@ -20,7 +20,7 @@ list_of_titles_and_thumbs = [['Caramella Girls - Caramelldansen (Official Englis
                              ['kyOresu - Pumped up Kicks (cover)', 'https://i.ytimg.com/vi/FuxGgJ7Ntts/hqdefault.jpg']]
 
 # for vid in test_list:
-# list_of_titles_and_thumbs.append(video_details(vid))
+# titles_and_thumbs.append(video_details(vid))
 
 print(list_of_titles_and_thumbs)
 size = len(list_of_titles_and_thumbs)

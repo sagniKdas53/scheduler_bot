@@ -1,13 +1,13 @@
 import csv
 import json
 import re
-import time
 from datetime import datetime
 from urllib import request, parse
 
 import pytz
 import requests
 import tabulate
+import time
 from bs4 import BeautifulSoup as _soup_
 
 
@@ -31,7 +31,7 @@ class ExecFaster:
     trans_d = None
     now = None
     list_url = []
-    list_of_titles_and_thumbs = []
+    titles_and_thumbs = {}
 
     def __init__(self):
         self.now = datetime.now()
@@ -162,13 +162,14 @@ class ExecFaster:
                     data = json.loads(response_text.decode())
                     details = [vid, data['title'], data['thumbnail_url']]
                     print(details)
-                    cls.list_of_titles_and_thumbs.append(details)
-                    time.sleep(1)
+                    cls.titles_and_thumbs[vid] = details
+                    time.sleep(0.1)
+                    # max ping is 65.307 ms so it takes 0.065307 seconds to get the response so 100 ms seems good enough
             except Exception as e:
                 print(e)
                 details = [vid, 'ERROR', 'ERROR']
-                cls.list_of_titles_and_thumbs.append(details)
-        print(cls.list_of_titles_and_thumbs)
+                cls.titles_and_thumbs[vid] = details
+        print(str(cls.titles_and_thumbs))
 
     @classmethod
     def translate_export(cls, file, orig, tran):

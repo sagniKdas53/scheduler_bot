@@ -7,12 +7,12 @@ of videos shown, i only want to show the previews of live ones also the link if 
 so i am working on making it look nice.
 """
 import signal
-import sys
 import threading
-import time
 from datetime import timedelta
 
 import discord
+import sys
+import time
 
 import working_bot_newer
 from token_cc import token
@@ -101,7 +101,7 @@ async def on_message(message):
         await message.channel.send(response)
         embed = discord.Embed(title='Video')
         for item in link_s:
-            for data in obJ_class.list_of_titles_and_thumbs:
+            for data in obJ_class.titles_and_thumbs:
                 if item[0][7:-1] == data[0]:
                     print(data)
                     embed.add_field(name=data[1], value=item[0], inline=True)
