@@ -160,14 +160,14 @@ class ExecFaster:
                 with request.urlopen(url) as response:
                     response_text = response.read()
                     data = json.loads(response_text.decode())
-                    details = [data['title'], data['thumbnail_url']]
+                    details = (data['title'], data['thumbnail_url'])
                     print(details)
                     cls.titles_and_thumbs[vid] = details
                     time.sleep(0.1)
                     # max ping is 65.307 ms so it takes 0.065307 seconds to get the response so 100 ms seems good enough
             except Exception as e:
                 print(e)
-                details = ['ERROR', 'ERROR']
+                details = ('ERROR', 'ERROR')
                 cls.titles_and_thumbs[vid] = details
         print(cls.titles_and_thumbs)
 
