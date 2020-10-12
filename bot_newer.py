@@ -40,9 +40,9 @@ async def on_message(message):
         print("Number of entries =" + str(size))
         for link in link_s:
             sub_l = obJ_class.titles_and_thumbs[link]
-            embed.add_field(name=sub_l[1], value='[Vid](' + link + ')',
+            embed.add_field(name=sub_l[0], value='[Vid](' + link + ')',
                             inline=True)
-            embed.set_image(url=sub_l[2])
+            embed.set_image(url=sub_l[1])
             await message.channel.send(embed=embed)
             embed.clear_fields()
 
