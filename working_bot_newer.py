@@ -54,7 +54,7 @@ class ExecFaster:
         return out_pt  # table of names and status in input time zone.
 
     def _generate_output_(self, dict_data, time_z, name, show_all):
-        table = '{:<5},{:' '^8},{:>6},{:<3},{:<3}'.format('Index', 'Name', 'Status', 'Hour', 'Minute')
+        table = '{:<5}{:' '^8} {:8}{:<3}:{:<3}'.format('Index', 'Name', 'Status', 'Hour', 'Minute')
         link_list = []
         indX = 0
         source_time_zone = pytz.timezone("Asia/Tokyo")
@@ -78,17 +78,17 @@ class ExecFaster:
                 if name == 'All' or name == data[5]:
                     if val.days < 0:
                         if show_all:
-                            table += '{}{:<5},{:' '^8},{:>6},{:<3},{:<3}'.format('\n', indX, data[5], "OVER",
-                                                                                 time_ob.hour, time_ob.minute)
+                            table += '{}{:<5}{:' '^8} {:' '^8}{:>4}:{:<3}'.format('\n', indX, data[5], "OVER",
+                                                                                  time_ob.hour, time_ob.minute)
                             link_list.append(source_link)
                     else:
-                        table += '{}{:<5},{:' '^8},{:>6},{:<3},{:<3}'.format('\n', indX, data[5], str(val)[0:7],
-                                                                             time_ob.hour, time_ob.minute)
+                        table += '{}{:<5}{:' '^8} {:' '^8}{:>4}:{:<3}'.format('\n', indX, data[5], str(val)[0:7],
+                                                                              time_ob.hour, time_ob.minute)
                         link_list.append(source_link)
             elif source_stat == "LIVE":
                 if name == 'All' or name == data[5]:
-                    table += '{}{:<5},{:' '^8},{:>6},{:<3},{:<3}'.format('\n', indX, data[5], "LIVE NOW",
-                                                                         time_ob.hour, time_ob.minute)
+                    table += '{}{:<5}{:' '^8} {:' '^8}{:>4}:{:<3}'.format('\n', indX, data[5], "LIVE NOW",
+                                                                          time_ob.hour, time_ob.minute)
                     link_list.append(source_link)
             indX += 1
         print(link_list, table)
