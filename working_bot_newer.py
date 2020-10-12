@@ -1,4 +1,3 @@
-import csv
 import json
 import re
 from datetime import datetime
@@ -6,70 +5,69 @@ from urllib import request, parse
 
 import pytz
 import requests
-import tabulate
 import time
 from bs4 import BeautifulSoup as _soup_
 
 
 class ExecFaster:
-    names_o = ['Iofi', '常闇トワ', '猫又おかゆ', 'アルランディス', '花咲みやび', '白銀ノエル', '桐生ココ', '鏡見キラ', '百鬼あやめ',
-               '天音かなた', '影山シエン', 'Gura', 'Amelia', '姫森ルーナ', '癒月ちょこ', '岸堂天真', 'アステル・レダ', '夜空メル',
-               '星街すいせい', '紫咲シオン', '兎田ぺこら', 'Risu', '荒咬オウガ', '桃鈴ねね', '雪花ラミィ', '白上フブキ', '奏手イヅル',
-               '戌神ころね', '湊あくあ', '大空スバル', '角巻わため', 'Moona', '不知火フレア', '夕刻ロベル', 'アキロゼ', '潤羽るしあ',
-               '赤井はあと', '尾丸ポルカ', '獅白ぼたん', '夏色まつり', 'Kiara', '宝鐘マリン', '律可', 'Calli', 'Ina', 'ロボ子さん',
-               'ときのそら', 'さくらみこ', '大神ミオ', 'AZKi', '夜霧', '希薇娅', '黑桃影', '朵莉丝', '阿媂娅', '罗莎琳']
-
-    names_trs = ['Iofi', 'Towa', 'Okayu', 'Aruran', 'Miyabi', 'Noel', 'Coco', 'Kira', 'Ayame', 'Kanata', 'Shien',
-                 'Gura', 'Amelia', 'Luna', 'Choco', 'Temma', 'Reda', 'Mel', 'Suisei', 'Shion', 'Pekora', 'Risu',
-                 'Ouga', 'Nene', 'Lamy', 'Fubuki', 'Izuru', 'Korone', 'Aqua', 'Subaru', 'Watame', 'Moona',
-                 'Flare', 'Robert', 'Akirose', 'Rushia', 'Haato', 'Polka', 'Botan', 'Matsuri', 'Kiara', 'Marine',
-                 'Ritsumei', 'Calli', 'Ina', 'Roboco', 'Sora', 'Miko', 'Mio', 'AZKi', 'Yogiri', 'Civia', 'Echo',
-                 'Doris', 'Artia', 'Rosalyn']
+    dict_translated = {'Iofi': 'Iofi', '常闇トワ': 'Towa', '猫又おかゆ': 'Okayu', 'アルランディス': 'Aruran',
+                       '花咲みやび': 'Miyabi', '白銀ノエル': 'Noel', '桐生ココ': 'Coco', '鏡見キラ': 'Kira',
+                       '百鬼あやめ': 'Ayame', '天音かなた': 'Kanata', '影山シエン': 'Shien', 'Gura': 'Gura',
+                       'Amelia': 'Amelia', '姫森ルーナ': 'Luna', '癒月ちょこ': 'Choco', '岸堂天真': 'Temma',
+                       'アステル・レダ': 'Reda', '夜空メル': 'Mel', '星街すいせい': 'Suisei', '紫咲シオン': 'Shion',
+                       '兎田ぺこら': 'Pekora', 'Risu': 'Risu', '荒咬オウガ': 'Ouga', '桃鈴ねね': 'Nene', '雪花ラミィ': 'Lamy',
+                       '白上フブキ': 'Fubuki', '奏手イヅル': 'Izuru', '戌神ころね': 'Korone', '湊あくあ': 'Aqua',
+                       '大空スバル': 'Subaru', '角巻わため': 'Watame', 'Moona': 'Moona', '不知火フレア': 'Flare',
+                       '夕刻ロベル': 'Robert', 'アキロゼ': 'Akirose', '潤羽るしあ': 'Rushia', '赤井はあと': 'Haato',
+                       '尾丸ポルカ': 'Polka', '獅白ぼたん': 'Botan', '夏色まつり': 'Matsuri',
+                       'Kiara': 'Kiara', '宝鐘マリン': 'Marine', '律可': 'Ritsumei', 'Calli': 'Calli', 'Ina': 'Ina',
+                       'ロボ子さん': 'Roboco', 'ときのそら': 'Sora', 'さくらみこ': 'Miko', '大神ミオ': 'Mio', 'AZKi': 'AZKi',
+                       '夜霧': 'Yogiri', '希薇娅': 'Civia', '黑桃影': 'Echo', '朵莉丝': 'Doris', '阿媂娅': 'Artia',
+                       '罗莎琳': 'Rosalyn'}
 
     checked_f = None
     data = None
-    trans_d = None
     now = None
     list_url = []
     titles_and_thumbs = {}
+    main_storage = {}
 
     def __init__(self):
         self.now = datetime.now()
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
-        self.data = self.start_reading(self.checked_f)  # parses it
+        self.start_reading(self.checked_f)  # parses it
         self.video_details(self.list_url)
-        self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # translates it
         print("Initialized")
 
     def show_in_time_zone(self, time_x):
-        out_pt = self._generate_output_(self.trans_d, time_x, 'show_all',
+        out_pt = self._generate_output_(self.main_storage, time_x, 'show_all',
                                         True)  # takes in export_translated.csv and time zone
         return out_pt  # table of names and status in input time zone.
 
     def show_by_name(self, name_to_show, time_x, boole):
         if boole == 'not_over':
-            out_pt = self._generate_output_(self.trans_d, time_x,
+            out_pt = self._generate_output_(self.main_storage, time_x,
                                             name_to_show, False)
         else:
-            out_pt = self._generate_output_(self.trans_d, time_x,
+            out_pt = self._generate_output_(self.main_storage, time_x,
                                             name_to_show, True)
         return out_pt  # table of names and status in input time zone.
 
-    def _generate_output_(self, file, time_z, name, show_all):
-        list_table = []
+    def _generate_output_(self, dict_data, time_z, name, show_all):
+        table = '{:<5},{:' '^8},{:>6},{:<3},{:<3}'.format('Index', 'Name', 'Status', 'Hour', 'Minute')
         link_list = []
         indX = 0
         source_time_zone = pytz.timezone("Asia/Tokyo")
-        reader = csv.DictReader(file)
-        for row in reader:
-            data = (row['MON'], row['DAY'], row['URL'], row['HR'], row['MN'], row['NAME'], row['LIVE'])
+        for row in dict_data.items():
+            data = (0, 1, 2, 3, 4, 5, 6)
             # MON,DAY,ID,HR,MN,NAME,LIVE,THUMBNAIL_URL
-            source_mon = data[0]
-            source_day = data[1]
-            source_link = '[Link](' + data[2] + ')'
-            source_hour = data[3]
-            source_min = data[4]
-            source_stat = data[6]
+            source_mon = row['MON']
+            source_day = row['DAY']
+            source_link = '[Link](' + row['URL'] + ')'
+            source_hour = row['HR']
+            source_min = row['MN']
+            source_stat = row['LIVE']
+            source_name = row['NAME']
             source_time = datetime(int(self.now.year), int(source_mon), int(source_day), int(source_hour),
                                    int(source_min), 00, 0000)
             source_date_with_timezone = source_time_zone.localize(source_time)
@@ -80,19 +78,20 @@ class ExecFaster:
                 if name == 'All' or name == data[5]:
                     if val.days < 0:
                         if show_all:
-                            list_table.append([indX, data[5], "OVER", time_ob.hour, time_ob.minute])
+                            table += '{}{:<5},{:' '^8},{:>6},{:<3},{:<3}'.format('\n', indX, data[5], "OVER",
+                                                                                 time_ob.hour, time_ob.minute)
                             link_list.append(source_link)
                     else:
-                        list_table.append([indX, data[5], str(val)[0:7], time_ob.hour, time_ob.minute])
+                        table += '{}{:<5},{:' '^8},{:>6},{:<3},{:<3}'.format('\n', indX, data[5], str(val)[0:7],
+                                                                             time_ob.hour, time_ob.minute)
                         link_list.append(source_link)
             elif source_stat == "LIVE":
                 if name == 'All' or name == data[5]:
-                    list_table.append([indX, data[5], "LIVE NOW", time_ob.hour, time_ob.minute])
+                    table += '{}{:<5},{:' '^8},{:>6},{:<3},{:<3}'.format('\n', indX, data[5], "LIVE NOW",
+                                                                         time_ob.hour, time_ob.minute)
                     link_list.append(source_link)
             indX += 1
-
-        table = tabulate.tabulate(list_table, headers=['Index', 'Name', 'Status', 'Hour', 'Minute'], tablefmt="plain")
-        print(link_list)
+        print(link_list, table)
         return link_list, table
 
     @classmethod
@@ -100,7 +99,6 @@ class ExecFaster:
         day_list = []
         hold = [0, 0]
         ms = 0
-        return_f = []
         flip_soup = _soup_(file_content, "html.parser")
         containers_date = flip_soup.find_all('div', class_="holodule navbar-text")
         containers_link = flip_soup.find_all('a', class_="thumbnail")
@@ -111,7 +109,6 @@ class ExecFaster:
         for month, day in day_list:
             print("{}/{},".format(month, day), end='')
         print('\n\n')
-        return_f.append('MON,DAY,URL,HR,MN,NAME,LIVE,THUMBNAIL_URL\n')
         for k in range(0, len(containers_link)):
             match = re.findall(r'href=\"(https:[//]*www\.youtube\.com/watch\?v=[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]*)\"',
                                str(containers_link[k]))[0]
@@ -129,16 +126,21 @@ class ExecFaster:
             hr = time_name[0].split(':')
             if int(hr[0]) != 23 and int(hr[1]) <= 59 and hold[0] == 23:
                 ms += 1
-                return_f.append('{},{},{},{},{},{},{},{}{}'.format(day_list[ms][0], day_list[ms][1],
-                                                                   match,
-                                                                   hr[0], hr[1], time_name[1], live, match_thumb, '\n'))
+                # MON,DAY,ID,HR,MN,NAME,LIVE,THUMBNAIL_URL
+                # return_f.append('MON,DAY,URL,HR,MN,NAME,LIVE,THUMBNAIL_URL\n')
+                cls.main_storage[match] = {'MON': day_list[ms][0], 'DAY': day_list[ms][1],
+                                           'URL': match,
+                                           'HR': hr[0], 'MN': hr[1], 'NAME': cls.dict_translated[time_name[1]],
+                                           'LIVE': live,
+                                           'THUMBNAIL_URL': match_thumb}
                 hold = [int(hr[0]), int(hr[1])]
             else:
-                return_f.append('{},{},{},{},{},{},{},{}{}'.format(day_list[ms][0], day_list[ms][1],
-                                                                   match,
-                                                                   hr[0], hr[1], time_name[1], live, match_thumb, '\n'))
+                cls.main_storage[match] = {'MON': day_list[ms][0], 'DAY': day_list[ms][1],
+                                           'URL': match,
+                                           'HR': hr[0], 'MN': hr[1], 'NAME': cls.dict_translated[time_name[1]],
+                                           'LIVE': live,
+                                           'THUMBNAIL_URL': match_thumb}
                 hold = [int(hr[0]), int(hr[1])]
-        return return_f
 
     def time_left(self, full_inp, target):
         self.now = datetime.now()
@@ -171,21 +173,9 @@ class ExecFaster:
                 cls.titles_and_thumbs[vid] = details
         print(cls.titles_and_thumbs)
 
-    @classmethod
-    def translate_export(cls, file, orig, tran):
-        dict_name = {}
-        for ele in range(len(orig)):
-            dict_name[orig[ele].strip()] = tran[ele].strip()
-        for key, val in dict_name.items():
-            for idx, ele in enumerate(file):
-                if key in ele:
-                    file[idx] = ele.replace(key, val)
-        return file
-
     def update(self):
         self.now = datetime.now()
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
-        self.data = self.start_reading(self.checked_f)  # parses it
+        self.start_reading(self.checked_f)  # parses it
         self.video_details(self.list_url)
-        self.trans_d = self.translate_export(self.data, self.names_o, self.names_trs)  # translates it
         print("RE-Initialized")
