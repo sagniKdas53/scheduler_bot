@@ -44,7 +44,7 @@ class ExecFaster:
     def show_in_time_zone(self, time_x):
         out_pt = self._generate_output_(self.trans_d, time_x, 'show_all',
                                         True)  # takes in export_translated.csv and time zone
-        print(out_pt)  # table of names and status in input time zone.
+        return out_pt  # table of names and status in input time zone.
 
     def show_by_name(self, name_to_show, time_x, boole):
         if boole == 'not_over':
@@ -73,7 +73,7 @@ class ExecFaster:
             source_time = datetime(int(self.now.year), int(source_mon), int(source_day), int(source_hour),
                                    int(source_min), 00, 0000)
             source_date_with_timezone = source_time_zone.localize(source_time)
-            val = self.time_left(source_date_with_timezone)
+            val = self.time_left(source_date_with_timezone, time_z)
             target_time_zone = pytz.timezone(time_z)
             time_ob = source_date_with_timezone.astimezone(target_time_zone)
             if source_stat == "NOT":
@@ -140,9 +140,9 @@ class ExecFaster:
                 hold = [int(hr[0]), int(hr[1])]
         return return_f
 
-    def time_left(self, full_inp):
+    def time_left(self, full_inp, target):
         self.now = datetime.now()
-        target_time_zone = pytz.timezone('Asia/Kolkata')
+        target_time_zone = pytz.timezone(target)
         target_date_with_timezone = self.now.astimezone(target_time_zone)
         left = full_inp - target_date_with_timezone
         return left
