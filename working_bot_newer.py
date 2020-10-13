@@ -23,7 +23,7 @@ class ExecFaster:
                        'Kiara': 'Kiara', '宝鐘マリン': 'Marine', '律可': 'Ritsumei', 'Calli': 'Calli', 'Ina': 'Ina',
                        'ロボ子さん': 'Roboco', 'ときのそら': 'Sora', 'さくらみこ': 'Miko', '大神ミオ': 'Mio', 'AZKi': 'AZKi',
                        '夜霧': 'Yogiri', '希薇娅': 'Civia', '黑桃影': 'Echo', '朵莉丝': 'Doris', '阿媂娅': 'Artia',
-                       '罗莎琳': 'Rosalyn'}
+                       '罗莎琳': 'Rosalyn', 'holoID': 'Hololive Indonesia'}
 
     checked_f = None
     data = None
@@ -37,6 +37,16 @@ class ExecFaster:
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
         self.start_reading(self.checked_f)  # parses it
         self.video_details(self.list_url)
+        '''
+        with open('list_url.txt', 'w') as datal:
+            datal.writelines(self.list_url)
+        with open('titles_and_thumbs.txt', 'w') as datat:
+            datat.writelines(self.titles_and_thumbs)
+        with open('main_storage.txt', 'w') as datas:
+            datas.writelines(self.main_storage)
+        self.list_url = open('list_url.txt', 'r').readlines()
+        self.titles_and_thumbs = open('titles_and_thumbs.txt', 'r').readlines()
+        self.main_storage = open('main_storage.txt', 'r').readlines()'''
         print("Initialized")
 
     def show_in_time_zone(self, time_x):
@@ -45,6 +55,7 @@ class ExecFaster:
         return out_pt  # table of names and status in input time zone.
 
     def show_by_name(self, name_to_show, time_x, boole):
+        print(name_to_show, time_x, boole)
         if boole == 'not_over':
             out_pt = self._generate_output_(self.main_storage, time_x,
                                             name_to_show, False)
@@ -54,20 +65,21 @@ class ExecFaster:
         return out_pt  # table of names and status in input time zone.
 
     def _generate_output_(self, dict_data, time_z, name, show_all):
+        print('entered')
         table = '{:<5}{:' '^8} {:8}{:<3}:{:<3}'.format('Index', 'Name', 'Status', 'Hour', 'Minute')
         link_list = []
         indX = 0
         source_time_zone = pytz.timezone("Asia/Tokyo")
         for row in dict_data.items():
-            data = (0, 1, 2, 3, 4, 5, 6)
             # MON,DAY,ID,HR,MN,NAME,LIVE,THUMBNAIL_URL
-            source_mon = row['MON']
-            source_day = row['DAY']
-            source_link = '[Link](' + row['URL'] + ')'
-            source_hour = row['HR']
-            source_min = row['MN']
-            source_stat = row['LIVE']
-            source_name = row['NAME']
+            print(row)
+            source_mon = row[1]['MON']
+            source_day = row[1]['DAY']
+            source_link = '[Link](' + row[1]['URL'] + ')'
+            source_hour = row[1]['HR']
+            source_min = row[1]['MN']
+            source_stat = row[1]['LIVE']
+            source_name = row[1]['NAME']
             source_time = datetime(int(self.now.year), int(source_mon), int(source_day), int(source_hour),
                                    int(source_min), 00, 0000)
             source_date_with_timezone = source_time_zone.localize(source_time)
@@ -75,19 +87,19 @@ class ExecFaster:
             target_time_zone = pytz.timezone(time_z)
             time_ob = source_date_with_timezone.astimezone(target_time_zone)
             if source_stat == "NOT":
-                if name == 'All' or name == data[5]:
+                if name == 'All' or name == source_name:
                     if val.days < 0:
                         if show_all:
-                            table += '{}{:<5}{:' '^8} {:' '^8}{:>4}:{:<3}'.format('\n', indX, data[5], "OVER",
+                            table += '{}{:<5}{:' '^8} {:' '^8}{:>4}:{:<3}'.format('\n', indX, source_name, "OVER",
                                                                                   time_ob.hour, time_ob.minute)
                             link_list.append(source_link)
                     else:
-                        table += '{}{:<5}{:' '^8} {:' '^8}{:>4}:{:<3}'.format('\n', indX, data[5], str(val)[0:7],
+                        table += '{}{:<5}{:' '^8} {:' '^8}{:>4}:{:<3}'.format('\n', indX, source_name, str(val)[0:7],
                                                                               time_ob.hour, time_ob.minute)
                         link_list.append(source_link)
             elif source_stat == "LIVE":
-                if name == 'All' or name == data[5]:
-                    table += '{}{:<5}{:' '^8} {:' '^8}{:>4}:{:<3}'.format('\n', indX, data[5], "LIVE NOW",
+                if name == 'All' or name == source_name:
+                    table += '{}{:<5}{:' '^8} {:' '^8}{:>4}:{:<3}'.format('\n', indX, source_name, "LIVE NOW",
                                                                           time_ob.hour, time_ob.minute)
                     link_list.append(source_link)
             indX += 1
@@ -124,6 +136,11 @@ class ExecFaster:
             cls.list_url.append(match)
             time_name = containers_link[k].text.replace(' ', '').split()
             hr = time_name[0].split(':')
+            print('MON:', day_list[ms][0], 'DAY:', day_list[ms][1],
+                  'URL:', match,
+                  'HR:', hr[0], 'MN:', hr[1], 'NAME:', cls.dict_translated[time_name[1]],
+                  'LIVE:', live,
+                  'THUMBNAIL_URL:', match_thumb)
             if int(hr[0]) != 23 and int(hr[1]) <= 59 and hold[0] == 23:
                 ms += 1
                 # MON,DAY,ID,HR,MN,NAME,LIVE,THUMBNAIL_URL
@@ -179,3 +196,4 @@ class ExecFaster:
         self.start_reading(self.checked_f)  # parses it
         self.video_details(self.list_url)
         print("RE-Initialized")
+        return True

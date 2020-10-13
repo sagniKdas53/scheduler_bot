@@ -76,7 +76,7 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
-    if message.content.startswith("&&sends"):
+    if message.content.startswith("&&simp"):
         text = message.content
         text = text.split(' ')
         name = text[1]
@@ -96,20 +96,20 @@ async def on_message(message):
         time_i = text[2]
         stat = text[3]
         name = name.title()
-        print("Requested: " + name + "Time Zone: " + time_i + "Showing: " + stat)
+        print("Requested: " + name + "Time Zone: " + time_i + " Showing: " + stat)
         link_s, response = obJ_class.show_by_name(name, time_i, stat)
-        print(link_s, response)
+        print(link_s, '\n', response)
         await message.channel.send(response)
         embed = discord.Embed(title='Video')
         size = len(link_s)
         print("Number of entries =" + str(size))
         for link in link_s:
-            sub_l = obJ_class.titles_and_thumbs[link]
-            embed.add_field(name=sub_l[0], value='[Vid](' + link + ')',
+            sub_l = obJ_class.titles_and_thumbs[link[7:-1]]
+            embed.add_field(name=sub_l[0], value=link,
                             inline=True)
             embed.set_image(url=sub_l[1])
-            await message.channel.send(embed=embed)
-            embed.clear_fields()
+        await message.channel.send(embed=embed)
+        embed.clear_fields()
 
     if message.content.startswith("&&exit"):
         await message.channel.send("Exiting")
@@ -123,7 +123,9 @@ async def on_message(message):
 
     if message.content.startswith("&&update"):
         await message.channel.send("Wait a minute")
-        obJ_class.update()
+        getD = obJ_class.update()
+        if getD:
+            await message.channel.send("Done updating")
 
     elif message.content == 'raise-exception':
         raise discord.DiscordException
