@@ -19,10 +19,10 @@ def _generate_output_(dict_data, time_z, name, show_all):
         source_min = row['MN']
         source_stat = row['LIVE']
         source_name = row['NAME']
-        source_time = datetime(int(self.now.year), int(source_mon), int(source_day), int(source_hour),
-                               int(source_min), 00, 0000)
+        source_time = datetime.datetime(int(2020), int(source_mon), int(source_day), int(source_hour),
+                                        int(source_min), 00, 0000)
         source_date_with_timezone = source_time_zone.localize(source_time)
-        val = self.time_left(source_date_with_timezone, time_z)
+        val = time_left(source_date_with_timezone, time_z)
         target_time_zone = pytz.timezone(time_z)
         time_ob = source_date_with_timezone.astimezone(target_time_zone)
         if source_stat == "NOT":
@@ -44,3 +44,11 @@ def _generate_output_(dict_data, time_z, name, show_all):
         indX += 1
     print(link_list, table)
     return link_list, table
+
+
+def time_left(full_inp, target):
+    now = datetime.datetime.now()
+    target_time_zone = pytz.timezone(target)
+    target_date_with_timezone = now.astimezone(target_time_zone)
+    left = full_inp - target_date_with_timezone
+    return left

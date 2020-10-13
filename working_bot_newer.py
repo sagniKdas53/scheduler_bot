@@ -1,4 +1,5 @@
 import json
+import pickle as pk
 import re
 from datetime import datetime
 from urllib import request, parse
@@ -31,22 +32,14 @@ class ExecFaster:
     list_url = []
     titles_and_thumbs = {}
     main_storage = {}
+    db = {'list_url': list_url, 'titles_and_thumbs': titles_and_thumbs, 'main_storage': main_storage}
 
     def __init__(self):
         self.now = datetime.now()
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
         self.start_reading(self.checked_f)  # parses it
         self.video_details(self.list_url)
-        '''
-        with open('list_url.txt', 'w') as datal:
-            datal.writelines(self.list_url)
-        with open('titles_and_thumbs.txt', 'w') as datat:
-            datat.writelines(self.titles_and_thumbs)
-        with open('main_storage.txt', 'w') as datas:
-            datas.writelines(self.main_storage)
-        self.list_url = open('list_url.txt', 'r').readlines()
-        self.titles_and_thumbs = open('titles_and_thumbs.txt', 'r').readlines()
-        self.main_storage = open('main_storage.txt', 'r').readlines()'''
+        # self.make_pick()  #only to be used for fast testing
         print("Initialized")
 
     def show_in_time_zone(self, time_x):
@@ -165,6 +158,18 @@ class ExecFaster:
         target_date_with_timezone = self.now.astimezone(target_time_zone)
         left = full_inp - target_date_with_timezone
         return left
+
+    @classmethod
+    def make_pick(cls):
+        pk.dump(cls.db, open('pickled_data', 'ab'))
+
+    @classmethod
+    def get_picked(cls):
+        unpack = open('pickled_data', 'rb')
+        cls.db = pk.load(unpack)
+        for keys in cls.db:
+            print(keys, '=>', cls.db[keys])
+        unpack.close()
 
     @classmethod
     def video_details(cls, video):
