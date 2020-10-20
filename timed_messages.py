@@ -104,11 +104,7 @@ async def on_message(message):
         size = len(link_s)
         print("Number of entries =" + str(size))
         if size > 3:
-            c_list = []
-            for lk in range(size - 3, size):
-                link = link_s[lk]
-                c_list.append(link)
-            link_s = c_list
+            link_s = [link_s[-3], link_s[-2], link_s[-1]]
         for link in link_s:
             sub_l = obJ_class.titles_and_thumbs[link[7:-1]]
             embed.add_field(name=sub_l[0], value=link,
