@@ -36,10 +36,13 @@ class ExecFaster:
 
     def __init__(self):
         self.now = datetime.now()
+        '''
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
         self.start_reading(self.checked_f)  # parses it
         self.video_details(self.list_url)
-        # self.make_pick()  #only to be used for fast testing
+        self.make_pick()  # only to be used for fast testing
+        '''
+        self.get_picked()
         print("Initialized")
 
     def show_in_time_zone(self, time_x):
