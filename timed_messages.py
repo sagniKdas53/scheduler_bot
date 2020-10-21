@@ -74,7 +74,8 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.author == client.user:
+    user = message.author
+    if user == client.user:
         return
     if message.content.startswith("&&simp"):
         text = message.content
