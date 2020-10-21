@@ -25,9 +25,9 @@ async def on_message(message):
         await resp.add_reaction(u"\U0001F447")
 
         def check(ree, ur):
-            emo = str(ree.emoji)
+            em = str(ree.emoji)
             if message.author == ur:
-                if emo == u"\U0001F446" or emo == u"\U0001F44A" or emo == u"\U0001F447":
+                if em == u"\U0001F446" or em == u"\U0001F44A" or em == u"\U0001F447":
                     return True
             return False
 
@@ -47,7 +47,7 @@ async def on_message(message):
             await chael.send('React got')
 
     if message.content.startswith("&&exit"):
-        await message.channel.send("Exiting")
+        await chael.send("Exiting")
         await client.close()
         print("Successfully logged out")
 
