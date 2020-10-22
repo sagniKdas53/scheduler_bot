@@ -36,13 +36,13 @@ class ExecFaster:
 
     def __init__(self):
         self.now = datetime.now()
-        '''
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
         self.start_reading(self.checked_f)  # parses it
         self.video_details(self.list_url)
         self.make_pick()  # only to be used for fast testing
         '''
         self.get_picked()
+        '''
         print("Initialized")
 
     def show_in_time_zone(self, time_x):
@@ -59,6 +59,9 @@ class ExecFaster:
             out_pt = self._generate_output_(self.main_storage, time_x,
                                             name_to_show, True)
         return out_pt  # table of names and status in input time zone.
+
+    '''This function needs some work on it why is it reading all the entries when it clearly knows what to pare and 
+    what to not'''
 
     def _generate_output_(self, dict_data, time_z, name, show_all):
         print('entered')
@@ -81,6 +84,7 @@ class ExecFaster:
                                    int(source_min), 00, 0000)
             source_date_with_timezone = source_time_zone.localize(source_time)
             val = self.time_left(source_date_with_timezone, time_z)
+            print(source_name, " has ", val, " time left")
             target_time_zone = pytz.timezone(time_z)
             time_ob = source_date_with_timezone.astimezone(target_time_zone)
             if source_stat == "NOT":
@@ -103,6 +107,9 @@ class ExecFaster:
             indX += 1
         print(link_list, table)
         return link_list, table
+
+    '''What could be done here is that main storage stores the data as dictionary with the names as the key and the 
+    items in the dict could be the '''
 
     @classmethod
     def start_reading(cls, file_content):
@@ -134,27 +141,48 @@ class ExecFaster:
             cls.list_url.append(match)
             time_name = containers_link[k].text.replace(' ', '').split()
             hr = time_name[0].split(':')
-            print('MON:', day_list[ms][0], 'DAY:', day_list[ms][1],
-                  'URL:', match,
-                  'HR:', hr[0], 'MN:', hr[1], 'NAME:', cls.dict_translated[time_name[1]],
-                  'LIVE:', live,
-                  'THUMBNAIL_URL:', match_thumb)
+            try:
+                print('MON:', day_list[ms][0], 'DAY:', day_list[ms][1],
+                      'URL:', match,
+                      'HR:', hr[0], 'MN:', hr[1], 'NAME:', cls.dict_translated[time_name[1]],
+                      'LIVE:', live,
+                      'THUMBNAIL_URL:', match_thumb)
+            except KeyError:
+                print('MON:', day_list[ms][0], 'DAY:', day_list[ms][1],
+                      'URL:', match,
+                      'HR:', hr[0], 'MN:', hr[1], 'NAME:', time_name[1],
+                      'LIVE:', live,
+                      'THUMBNAIL_URL:', match_thumb)
             if int(hr[0]) != 23 and int(hr[1]) <= 59 and hold[0] == 23:
                 ms += 1
                 # MON,DAY,ID,HR,MN,NAME,LIVE,THUMBNAIL_URL
                 # return_f.append('MON,DAY,URL,HR,MN,NAME,LIVE,THUMBNAIL_URL\n')
-                cls.main_storage[match] = {'MON': day_list[ms][0], 'DAY': day_list[ms][1],
-                                           'URL': match,
-                                           'HR': hr[0], 'MN': hr[1], 'NAME': cls.dict_translated[time_name[1]],
-                                           'LIVE': live,
-                                           'THUMBNAIL_URL': match_thumb}
+                try:
+                    cls.main_storage[match] = {'MON': day_list[ms][0], 'DAY': day_list[ms][1],
+                                               'URL': match,
+                                               'HR': hr[0], 'MN': hr[1], 'NAME': cls.dict_translated[time_name[1]],
+                                               'LIVE': live,
+                                               'THUMBNAIL_URL': match_thumb}
+                except KeyError:
+                    cls.main_storage[match] = {'MON': day_list[ms][0], 'DAY': day_list[ms][1],
+                                               'URL': match,
+                                               'HR': hr[0], 'MN': hr[1], 'NAME': time_name[1],
+                                               'LIVE': live,
+                                               'THUMBNAIL_URL': match_thumb}
                 hold = [int(hr[0]), int(hr[1])]
             else:
-                cls.main_storage[match] = {'MON': day_list[ms][0], 'DAY': day_list[ms][1],
-                                           'URL': match,
-                                           'HR': hr[0], 'MN': hr[1], 'NAME': cls.dict_translated[time_name[1]],
-                                           'LIVE': live,
-                                           'THUMBNAIL_URL': match_thumb}
+                try:
+                    cls.main_storage[match] = {'MON': day_list[ms][0], 'DAY': day_list[ms][1],
+                                               'URL': match,
+                                               'HR': hr[0], 'MN': hr[1], 'NAME': cls.dict_translated[time_name[1]],
+                                               'LIVE': live,
+                                               'THUMBNAIL_URL': match_thumb}
+                except KeyError:
+                    cls.main_storage[match] = {'MON': day_list[ms][0], 'DAY': day_list[ms][1],
+                                               'URL': match,
+                                               'HR': hr[0], 'MN': hr[1], 'NAME': time_name[1],
+                                               'LIVE': live,
+                                               'THUMBNAIL_URL': match_thumb}
                 hold = [int(hr[0]), int(hr[1])]
 
     def time_left(self, full_inp, target):
@@ -175,6 +203,7 @@ class ExecFaster:
         for keys in cls.db:
             print(keys, '=>', cls.db[keys])
         unpack.close()
+        print("Unpacked Successfully")
 
     @classmethod
     def video_details(cls, video):
@@ -205,5 +234,6 @@ class ExecFaster:
         self.checked_f = requests.get('https://schedule.hololive.tv/').content  # reads data from site
         self.start_reading(self.checked_f)  # parses it
         self.video_details(self.list_url)
+        self.make_pick()  # only to be used for fast testing
         print("RE-Initialized")
         return True
