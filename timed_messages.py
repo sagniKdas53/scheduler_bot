@@ -86,7 +86,7 @@ async def on_message(message):
         stat = text[3]
         name = name.title()
         print("Requested: " + name + " Time Zone: " + time_z + " Showing: " + stat)
-        link_s, response = obJ_class.show_by_name(name, time_z, stat)
+        link_s, response, dict_rem = obJ_class.show_by_name(name, time_z, stat)
         print(link_s, '\n\n', response)
         await message.channel.send(response)
 
@@ -99,7 +99,7 @@ async def on_message(message):
         stat = text[3]
         name = name.title()
         print("Requested: " + name + "Time Zone: " + time_i + " Showing: " + stat)
-        link_s, response, time_d = obJ_class.show_by_name(name, time_i, stat)
+        link_s, response, dict_rem = obJ_class.show_by_name(name, time_i, stat)
         print(link_s, '\n', response)
         await message.channel.send(response)
         embed = discord.Embed(title='Video')
@@ -123,7 +123,7 @@ async def on_message(message):
         stat = text[3]
         name = name.title()
         print("Requested: " + name + "Time Zone: " + time_i + " Showing: " + stat)
-        link_s, response = obJ_class.show_by_name(name, time_i, stat)
+        link_s, response, dict_rem = obJ_class.show_by_name(name, time_i, stat)
         print(link_s, '\n', response)
         await message.channel.send(response)
         embed = discord.Embed(title='Video')
@@ -138,6 +138,10 @@ async def on_message(message):
             embed.set_image(url=sub_l[1])
         await message.channel.send(embed=embed)
         resp = await message.channel.send('Add a reaction in 30 sec to set reminder')
+        '''
+        firstly, make a way to check if there are any reminder worthy streams in the list if there are then add reacts,
+        also figure out a way to actually send the messahes at the given time.
+        '''
         await resp.add_reaction(u"\U0001F446")
         await resp.add_reaction(u"\U0001F44A")
         await resp.add_reaction(u"\U0001F447")

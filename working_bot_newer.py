@@ -79,7 +79,7 @@ class ExecFaster:
         dict_data = dict_data_main[name]
         table = '{:<5}{:' '^8} {:8}{:<3}:{:<3}'.format('Index', 'Name', 'Status', 'Hour', 'Minute')
         link_list = []
-        # times_dict = {}
+        times_dict = {}
         indX = 0
         source_time_zone = pytz.timezone("Asia/Tokyo")
         for row in dict_data.items():
@@ -106,19 +106,22 @@ class ExecFaster:
                             table += '{}{:<5}{:' '^8} {:' '^8}{:' '>4}:{:<3}'.format('\n', indX, source_name, "OVER",
                                                                                      time_ob.hour, time_ob.minute)
                             link_list.append(source_link)
+                            times_dict[source_link] = "Not Possible!"
                     else:
                         table += '{}{:<5}{:' '^8} {:' '^8}{:' '>4}:{:<3}'.format('\n', indX, source_name, str(val)[0:7],
                                                                                  time_ob.hour, time_ob.minute)
                         link_list.append(source_link)
+                        times_dict[source_link] = val.seconds
 
             elif source_stat == "LIVE":
                 if name == 'All' or name == source_name:
                     table += '{}{:<5}{:' '^8} {:' '^8}{:' '>4}:{:<3}'.format('\n', indX, source_name, "LIVE NOW",
                                                                              time_ob.hour, time_ob.minute)
                     link_list.append(source_link)
+                    times_dict[source_link] = "Go!"
             indX += 1
         print(link_list, table)
-        return link_list, table
+        return link_list, table, times_dict
 
     '''What could be done here is that main storage stores the data as dictionary with the names as the key and the 
     items in the dict could be the '''
