@@ -64,6 +64,7 @@ class ExecFaster:
         print('entered')
         table = '{:<5}{:' '^8} {:8}{:<3}:{:<3}'.format('Index', 'Name', 'Status', 'Hour', 'Minute')
         link_list = []
+        # times_dict = {}
         indX = 0
         source_time_zone = pytz.timezone("Asia/Tokyo")
         for row in dict_data.items():
@@ -86,17 +87,18 @@ class ExecFaster:
                 if name == 'All' or name == source_name:
                     if val.days < 0:
                         if show_all:
-                            table += '{}{:<5}{:' '^8} {:' '^8}{:>4}:{:<3}'.format('\n', indX, source_name, "OVER",
-                                                                                  time_ob.hour, time_ob.minute)
+                            table += '{}{:<5}{:' '^8} {:' '^8}{:' '>4}:{:<3}'.format('\n', indX, source_name, "OVER",
+                                                                                     time_ob.hour, time_ob.minute)
                             link_list.append(source_link)
                     else:
-                        table += '{}{:<5}{:' '^8} {:' '^8}{:>4}:{:<3}'.format('\n', indX, source_name, str(val)[0:7],
-                                                                              time_ob.hour, time_ob.minute)
+                        table += '{}{:<5}{:' '^8} {:' '^8}{:' '>4}:{:<3}'.format('\n', indX, source_name, str(val)[0:7],
+                                                                                 time_ob.hour, time_ob.minute)
                         link_list.append(source_link)
+
             elif source_stat == "LIVE":
                 if name == 'All' or name == source_name:
-                    table += '{}{:<5}{:' '^8} {:' '^8}{:>4}:{:<3}'.format('\n', indX, source_name, "LIVE NOW",
-                                                                          time_ob.hour, time_ob.minute)
+                    table += '{}{:<5}{:' '^8} {:' '^8}{:' '>4}:{:<3}'.format('\n', indX, source_name, "LIVE NOW",
+                                                                             time_ob.hour, time_ob.minute)
                     link_list.append(source_link)
             indX += 1
         print(link_list, table)
