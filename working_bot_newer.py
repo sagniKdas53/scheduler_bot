@@ -24,7 +24,7 @@ class ExecFaster:
                        'Kiara': 'Kiara', '宝鐘マリン': 'Marine', '律可': 'Ritsumei', 'Calli': 'Calli', 'Ina': 'Ina',
                        'ロボ子さん': 'Roboco', 'ときのそら': 'Sora', 'さくらみこ': 'Miko', '大神ミオ': 'Mio', 'AZKi': 'AZKi',
                        '夜霧': 'Yogiri', '希薇娅': 'Civia', '黑桃影': 'Echo', '朵莉丝': 'Doris', '阿媂娅': 'Artia',
-                       '罗莎琳': 'Rosalyn', 'holoID': 'Hololive Indonesia'}
+                       '罗莎琳': 'Rosalyn'}
 
     checked_f = None
     data = None
@@ -40,9 +40,10 @@ class ExecFaster:
                               'Akirose': {}, 'Rushia': {}, 'Haato': {}, 'Polka': {}, 'Botan': {}, 'Matsuri': {},
                               'Kiara': {}, 'Marine': {}, 'Ritsumei': {}, 'Calli': {}, 'Ina': {}, 'Roboco': {},
                               'Sora': {}, 'Miko': {}, 'Mio': {}, 'AZKi': {}, 'Yogiri': {}, 'Civia': {}, 'Echo': {},
-                              'Doris': {}, 'Artia': {}, 'Rosalyn': {}, 'Hololive Indonesia': {}}
+                              'Doris': {}, 'Artia': {}, 'Rosalyn': {}, 'holo': {}}
 
-    db = {'list_url': list_url, 'titles_and_thumbs': titles_and_thumbs, 'main_storage': main_storage}
+    db = {'list_url': list_url, 'titles_and_thumbs': titles_and_thumbs, 'main_storage': main_storage,
+          'rapid_access_via_names': rapid_access_via_names}
 
     def __init__(self):
         self.now = datetime.now()
@@ -56,25 +57,26 @@ class ExecFaster:
         print("Initialized")
 
     def show_in_time_zone(self, time_x):
-        out_pt = self._generate_output_(self.main_storage, time_x, 'show_all',
+        out_pt = self._generate_output_(self.rapid_access_via_names, time_x, 'show_all',
                                         True)  # takes in export_translated.csv and time zone
         return out_pt  # table of names and status in input time zone.
 
     def show_by_name(self, name_to_show, time_x, boole):
         print(name_to_show, time_x, boole)
         if boole == 'not_over':
-            out_pt = self._generate_output_(self.main_storage, time_x,
+            out_pt = self._generate_output_(self.rapid_access_via_names, time_x,
                                             name_to_show, False)
         else:
-            out_pt = self._generate_output_(self.main_storage, time_x,
+            out_pt = self._generate_output_(self.rapid_access_via_names, time_x,
                                             name_to_show, True)
         return out_pt  # table of names and status in input time zone.
 
     '''This function needs some work on it why is it reading all the entries when it clearly knows what to pare and 
     what to not'''
 
-    def _generate_output_(self, dict_data, time_z, name, show_all):
+    def _generate_output_(self, dict_data_main, time_z, name, show_all):
         print('entered')
+        dict_data = dict_data_main[name]
         table = '{:<5}{:' '^8} {:8}{:<3}:{:<3}'.format('Index', 'Name', 'Status', 'Hour', 'Minute')
         link_list = []
         # times_dict = {}
@@ -173,12 +175,28 @@ class ExecFaster:
                                                'HR': hr[0], 'MN': hr[1], 'NAME': cls.dict_translated[time_name[1]],
                                                'LIVE': live,
                                                'THUMBNAIL_URL': match_thumb}
+                    cls.rapid_access_via_names[cls.dict_translated[time_name[1]]][match] = {'MON': day_list[ms][0],
+                                                                                            'DAY': day_list[ms][1],
+                                                                                            'URL': match,
+                                                                                            'HR': hr[0], 'MN': hr[1],
+                                                                                            'NAME': cls.dict_translated[
+                                                                                                time_name[1]],
+                                                                                            'LIVE': live,
+                                                                                            'THUMBNAIL_URL': match_thumb}
                 except KeyError:
                     cls.main_storage[match] = {'MON': day_list[ms][0], 'DAY': day_list[ms][1],
                                                'URL': match,
                                                'HR': hr[0], 'MN': hr[1], 'NAME': time_name[1],
                                                'LIVE': live,
                                                'THUMBNAIL_URL': match_thumb}
+                    cls.rapid_access_via_names['holo'][match] = {'MON': day_list[ms][0],
+                                                                 'DAY': day_list[ms][1],
+                                                                 'URL': match,
+                                                                 'HR': hr[0], 'MN': hr[1],
+                                                                 'NAME': cls.dict_translated[
+                                                                     time_name[1]],
+                                                                 'LIVE': live,
+                                                                 'THUMBNAIL_URL': match_thumb}
                 hold = [int(hr[0]), int(hr[1])]
             else:
                 try:
@@ -187,12 +205,28 @@ class ExecFaster:
                                                'HR': hr[0], 'MN': hr[1], 'NAME': cls.dict_translated[time_name[1]],
                                                'LIVE': live,
                                                'THUMBNAIL_URL': match_thumb}
+                    cls.rapid_access_via_names[cls.dict_translated[time_name[1]]][match] = {'MON': day_list[ms][0],
+                                                                                            'DAY': day_list[ms][1],
+                                                                                            'URL': match,
+                                                                                            'HR': hr[0], 'MN': hr[1],
+                                                                                            'NAME': cls.dict_translated[
+                                                                                                time_name[1]],
+                                                                                            'LIVE': live,
+                                                                                            'THUMBNAIL_URL': match_thumb}
                 except KeyError:
                     cls.main_storage[match] = {'MON': day_list[ms][0], 'DAY': day_list[ms][1],
                                                'URL': match,
                                                'HR': hr[0], 'MN': hr[1], 'NAME': time_name[1],
                                                'LIVE': live,
                                                'THUMBNAIL_URL': match_thumb}
+                    cls.rapid_access_via_names['holo'][match] = {'MON': day_list[ms][0],
+                                                                 'DAY': day_list[ms][1],
+                                                                 'URL': match,
+                                                                 'HR': hr[0], 'MN': hr[1],
+                                                                 'NAME': cls.dict_translated[
+                                                                     time_name[1]],
+                                                                 'LIVE': live,
+                                                                 'THUMBNAIL_URL': match_thumb}
                 hold = [int(hr[0]), int(hr[1])]
 
     def time_left(self, full_inp, target):

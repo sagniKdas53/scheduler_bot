@@ -20,8 +20,8 @@ for name in dict_translated.values():
 
 print(rapid_access_via_names)
 
-rapid_access_via_names['Iofi']['id'] = {'Studd': 'More stuff'}
-rapid_access_via_names['Iofi']['id2'] = {'Studd': 'More stuff'}
+rapid_access_via_names['Iofi']['id'] = {'Stuff': 'More stuff'}
+rapid_access_via_names['Iofi']['id2'] = {'Stuff': 'More stuff'}
 
 print(rapid_access_via_names)
 print(rapid_access_via_names['Iofi'])
@@ -29,8 +29,21 @@ res = rapid_access_via_names['Iofi']
 print(res)
 
 '''
-{'Iofi': {}, 'Towa': {}, 'Okayu': {}, 'Aruran': {}, 'Miyabi': {}, 'Noel': {}, 'Coco': {}, 'Kira': {}, 'Ayame': {}, 'Kanata': {}, 'Shien': {}, 'Gura': {}, 'Amelia': {}, 'Luna': {}, 'Choco': {}, 'Temma': {}, 'Reda': {}, 'Mel': {}, 'Suisei': {}, 'Shion': {}, 'Pekora': {}, 'Risu': {}, 'Ouga': {}, 'Nene': {}, 'Lamy': {}, 'Fubuki': {}, 'Izuru': {}, 'Korone': {}, 'Aqua': {}, 'Subaru': {}, 'Watame': {}, 'Moona': {}, 'Flare': {}, 'Robert': {}, 'Akirose': {}, 'Rushia': {}, 'Haato': {}, 'Polka': {}, 'Botan': {}, 'Matsuri': {}, 'Kiara': {}, 'Marine': {}, 'Ritsumei': {}, 'Calli': {}, 'Ina': {}, 'Roboco': {}, 'Sora': {}, 'Miko': {}, 'Mio': {}, 'AZKi': {}, 'Yogiri': {}, 'Civia': {}, 'Echo': {}, 'Doris': {}, 'Artia': {}, 'Rosalyn': {}, 'Hololive Indonesia': {}}
-{'Iofi': {'id': {'Studd': 'More stuff'}, 'id2': {'Studd': 'More stuff'}}, 'Towa': {}, 'Okayu': {}, 'Aruran': {}, 'Miyabi': {}, 'Noel': {}, 'Coco': {}, 'Kira': {}, 'Ayame': {}, 'Kanata': {}, 'Shien': {}, 'Gura': {}, 'Amelia': {}, 'Luna': {}, 'Choco': {}, 'Temma': {}, 'Reda': {}, 'Mel': {}, 'Suisei': {}, 'Shion': {}, 'Pekora': {}, 'Risu': {}, 'Ouga': {}, 'Nene': {}, 'Lamy': {}, 'Fubuki': {}, 'Izuru': {}, 'Korone': {}, 'Aqua': {}, 'Subaru': {}, 'Watame': {}, 'Moona': {}, 'Flare': {}, 'Robert': {}, 'Akirose': {}, 'Rushia': {}, 'Haato': {}, 'Polka': {}, 'Botan': {}, 'Matsuri': {}, 'Kiara': {}, 'Marine': {}, 'Ritsumei': {}, 'Calli': {}, 'Ina': {}, 'Roboco': {}, 'Sora': {}, 'Miko': {}, 'Mio': {}, 'AZKi': {}, 'Yogiri': {}, 'Civia': {}, 'Echo': {}, 'Doris': {}, 'Artia': {}, 'Rosalyn': {}, 'Hololive Indonesia': {}}
-{'id': {'Studd': 'More stuff'}, 'id2': {'Studd': 'More stuff'}}
-{'id': {'Studd': 'More stuff'}, 'id2': {'Studd': 'More stuff'}}
+{'Iofi': {}, 'Towa': {}, 'Okayu': {}, 'Aruran': {}, 'Miyabi': {}, 'Noel': {}, 'Coco': {}, 'Kira': {}, 'Ayame': {}, 
+'Kanata': {}, 'Shien': {}, 'Gura': {}, 'Amelia': {}, 'Luna': {}, 'Choco': {}, 'Temma': {}, 'Reda': {}, 'Mel': {}, 
+'Suisei': {}, 'Shion': {}, 'Pekora': {}, 'Risu': {}, 'Ouga': {}, 'Nene': {}, 'Lamy': {}, 'Fubuki': {}, 'Izuru': {}, 
+'Korone': {}, 'Aqua': {}, 'Subaru': {}, 'Watame': {}, 'Moona': {}, 'Flare': {}, 'Robert': {}, 'Akirose': {}, 
+'Rushia': {}, 'Haato': {}, 'Polka': {}, 'Botan': {}, 'Matsuri': {}, 'Kiara': {}, 'Marine': {}, 'Ritsumei': {}, 
+'Calli': {}, 'Ina': {}, 'Roboco': {}, 'Sora': {}, 'Miko': {}, 'Mio': {}, 'AZKi': {}, 'Yogiri': {}, 'Civia': {}, 
+'Echo': {}, 'Doris': {}, 'Artia': {}, 'Rosalyn': {}, 'Hololive Indonesia': {}}
+{'Iofi': {'id': {'Stuff': 'More stuff'}, 'id2': {'Stuff': 'More stuff'}}, 'Towa': {}, 'Okayu': {}, 'Aruran': {}, 
+'Miyabi': {}, 'Noel': {}, 'Coco': {}, 'Kira': {}, 'Ayame': {}, 'Kanata': {}, 'Shien': {}, 'Gura': {}, 'Amelia': {}, 
+'Luna': {}, 'Choco': {}, 'Temma': {}, 'Reda': {}, 'Mel': {}, 'Suisei': {}, 'Shion': {}, 'Pekora': {}, 'Risu': {}, 
+'Ouga': {}, 'Nene': {}, 'Lamy': {}, 'Fubuki': {}, 'Izuru': {}, 'Korone': {}, 'Aqua': {}, 'Subaru': {}, 'Watame': {}, 
+'Moona': {}, 'Flare': {}, 'Robert': {}, 'Akirose': {}, 'Rushia': {}, 'Haato': {}, 'Polka': {}, 'Botan': {}, 
+'Matsuri': {}, 'Kiara': {}, 'Marine': {}, 'Ritsumei': {}, 'Calli': {}, 'Ina': {}, 'Roboco': {}, 'Sora': {}, 'Miko': {},
+ 'Mio': {}, 'AZKi': {}, 'Yogiri': {}, 'Civia': {}, 'Echo': {}, 'Doris': {}, 'Artia': {}, 'Rosalyn': {}, '
+ Hololive Indonesia': {}}
+{'id': {'Stuff': 'More stuff'}, 'id2': {'Stuff': 'More stuff'}}
+{'id': {'Stuff': 'More stuff'}, 'id2': {'Stuff': 'More stuff'}}
 '''
