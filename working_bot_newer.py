@@ -32,6 +32,16 @@ class ExecFaster:
     list_url = []
     titles_and_thumbs = {}
     main_storage = {}
+    rapid_access_via_names = {'Iofi': {}, 'Towa': {}, 'Okayu': {}, 'Aruran': {}, 'Miyabi': {}, 'Noel': {}, 'Coco': {},
+                              'Kira': {}, 'Ayame': {}, 'Kanata': {}, 'Shien': {}, 'Gura': {}, 'Amelia': {}, 'Luna': {},
+                              'Choco': {}, 'Temma': {}, 'Reda': {}, 'Mel': {}, 'Suisei': {}, 'Shion': {}, 'Pekora': {},
+                              'Risu': {}, 'Ouga': {}, 'Nene': {}, 'Lamy': {}, 'Fubuki': {}, 'Izuru': {}, 'Korone': {},
+                              'Aqua': {}, 'Subaru': {}, 'Watame': {}, 'Moona': {}, 'Flare': {}, 'Robert': {},
+                              'Akirose': {}, 'Rushia': {}, 'Haato': {}, 'Polka': {}, 'Botan': {}, 'Matsuri': {},
+                              'Kiara': {}, 'Marine': {}, 'Ritsumei': {}, 'Calli': {}, 'Ina': {}, 'Roboco': {},
+                              'Sora': {}, 'Miko': {}, 'Mio': {}, 'AZKi': {}, 'Yogiri': {}, 'Civia': {}, 'Echo': {},
+                              'Doris': {}, 'Artia': {}, 'Rosalyn': {}, 'Hololive Indonesia': {}}
+
     db = {'list_url': list_url, 'titles_and_thumbs': titles_and_thumbs, 'main_storage': main_storage}
 
     def __init__(self):
