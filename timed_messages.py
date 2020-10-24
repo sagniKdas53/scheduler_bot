@@ -140,7 +140,7 @@ async def on_message(message):
         resp = await message.channel.send('Add a reaction in 30 sec to set reminder')
         '''
         firstly, make a way to check if there are any reminder worthy streams in the list if there are then add reacts,
-        also figure out a way to actually send the messahes at the given time.
+        also figure out a way to actually send the messages at the given time.
         '''
         await resp.add_reaction(u"\U0001F446")
         await resp.add_reaction(u"\U0001F44A")
