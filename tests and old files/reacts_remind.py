@@ -5,7 +5,7 @@ import discord
 from token_cc import token
 
 client = discord.Client()
-times = [60, 120, 30]
+times = [18 * 60, 1 * 60, 4 * 60]
 
 
 @client.event
@@ -50,3 +50,6 @@ async def on_message(message):
 
 
 client.run(token(), bot=True)
+
+'''https://stackoverflow.com/questions/62544309/why-client-emojis-newer-version-of-client-get-all-emojis-returns-empy-list-wh
+https://maah.gitbooks.io/discord-bots/content/getting-started/custom-and-animated-emojis.html'''

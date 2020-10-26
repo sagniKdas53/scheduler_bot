@@ -13,9 +13,10 @@ async def on_ready():
         print(f'Guild Members:\n - {members}')
 
     for emo_g in client.emojis:
-        print(emo_g.name)
-        print(emo_g.id)
-        print(emo_g.require_colons)
+        if emo_g.require_colons:
+            print('<:' + emo_g.name + ':' + emo_g.id + '>')
+        else:
+            print('<:' + emo_g.name + ':' + emo_g.id + '>')
 
 
 @client.event
@@ -23,6 +24,8 @@ async def on_message(message):
     # we do not want the bot to reply to itself
     if message.author == client.user:
         return
+    if ':8036_Ahegao:' in message.content:
+        await message.add_reaction(emoji=client.emojis[0])
     print(message.content)
 
 

@@ -19,6 +19,7 @@ import working_bot_newer
 from token_cc import token
 
 WAIT_TIME_SECONDS = 60 * 60 * 4  # 4 hours should be enough?
+dict_emo = {}
 
 
 class ProgramKilled(Exception):
@@ -63,14 +64,17 @@ obJ_class = working_bot_newer.ExecFaster()
 @client.event
 async def on_ready():
     print(f'{client.user.name} has connected to Discord!')
-
-
-@client.event
-async def on_ready():
     for guild in client.guilds:
         print(guild.name)
         members = '\n - '.join([member.name for member in guild.members])
         print(f'Guild Members:\n - {members}')
+    print('The emojis in the guild are')
+    for emo_g in client.emojis:
+        dict_emo[emo_g.name] = emo_g
+        if emo_g.require_colons:
+            print('<:' + emo_g.name + ':' + emo_g.id + '>')
+        else:
+            print('is this even allowed?')
 
 
 @client.event
@@ -114,7 +118,7 @@ async def on_message(message):
             embed.set_image(url=sub_l[1])
         await message.channel.send(embed=embed)
 
-    if message.content.startswith("&&addrem"):
+    if message.content.startswith("&&rem"):
         text = message.content
         text = text.split(' ')
         print(text, '\n\n')
@@ -142,27 +146,35 @@ async def on_message(message):
         firstly, make a way to check if there are any reminder worthy streams in the list if there are then add reacts,
         also figure out a way to actually send the messages at the given time.
         '''
-        await resp.add_reaction(':one:')
-        await resp.add_reaction(':two:')
-        await resp.add_reaction(':three:')
+        await resp.add_reaction(emoji=dict_emo[':keycap1:'])
+        await resp.add_reaction(emoji=dict_emo[':keycap2:'])
+        await resp.add_reaction(emoji=dict_emo[':keycap3:'])
 
         def check(ree, ur):
             em = str(ree.emoji)
             if message.author == ur:
-                if em == ':one:' or em == ':two:' or em == ':three:':
+                if em == ':keycap1:' or em == ':keycap2:' or em == ':keycap3:':
                     return True
             return False
 
         try:
             reaction, user = await client.wait_for('reaction_add', timeout=30.0, check=check)
             print('Got ', reaction, ' from ', user)
+            '''Need to format the messages test if the async io can handle long waits like days without becoming 
+            unstable and check if emo actually getting the right string or do i need to use str(reaction.emoji.name)'''
             emo = str(reaction.emoji)
-            if emo == ':one:':
-                await message.channel.send("ONE")
-            if emo == ':two:':
-                await message.channel.send("TWO")
-            if emo == ':three:':
-                await message.channel.send("THREE")
+            try:
+                if emo == ':keycap1:':
+                    await asyncio.sleep(dict_rem[0] - 300)
+                    await message.author.send(link_s[0])
+                if emo == ':keycap2:':
+                    await asyncio.sleep(dict_rem[1] - 300)
+                    await message.author.send(link_s[1])
+                if emo == ':keycap3:':
+                    await asyncio.sleep(dict_rem[2] - 300)
+                    await message.author.send(link_s[2])
+            except (asyncio.TimeoutError, TypeError):
+                pass
         except asyncio.TimeoutError:
             await message.channel.send('Failed to react')
         else:

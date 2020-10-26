@@ -24,7 +24,7 @@ class ExecFaster:
                        'Kiara': 'Kiara', '宝鐘マリン': 'Marine', '律可': 'Ritsumei', 'Calli': 'Calli', 'Ina': 'Ina',
                        'ロボ子さん': 'Roboco', 'ときのそら': 'Sora', 'さくらみこ': 'Miko', '大神ミオ': 'Mio', 'AZKi': 'AZKi',
                        '夜霧': 'Yogiri', '希薇娅': 'Civia', '黑桃影': 'Echo', '朵莉丝': 'Doris', '阿媂娅': 'Artia',
-                       '罗莎琳': 'Rosalyn'}
+                       '罗莎琳': 'Rosalyn', 'holo': 'Some branch channel'}
 
     checked_f = None
     data = None
@@ -106,7 +106,7 @@ class ExecFaster:
                             table += '{}{:<5}{:' '^8} {:' '^8}{:' '>4}:{:<3}'.format('\n', indX, source_name, "OVER",
                                                                                      time_ob.hour, time_ob.minute)
                             link_list.append(source_link)
-                            times_dict[source_link] = "Not Possible!"
+                            times_dict[source_link] = 0
                     else:
                         table += '{}{:<5}{:' '^8} {:' '^8}{:' '>4}:{:<3}'.format('\n', indX, source_name, str(val)[0:7],
                                                                                  time_ob.hour, time_ob.minute)
@@ -118,7 +118,7 @@ class ExecFaster:
                     table += '{}{:<5}{:' '^8} {:' '^8}{:' '>4}:{:<3}'.format('\n', indX, source_name, "LIVE NOW",
                                                                              time_ob.hour, time_ob.minute)
                     link_list.append(source_link)
-                    times_dict[source_link] = "Go!"
+                    times_dict[source_link] = 0
             indX += 1
         print(link_list, table)
         return link_list, table, times_dict
@@ -197,7 +197,7 @@ class ExecFaster:
                                                                  'URL': match,
                                                                  'HR': hr[0], 'MN': hr[1],
                                                                  'NAME': cls.dict_translated[
-                                                                     time_name[1]],
+                                                                     'holo'],
                                                                  'LIVE': live,
                                                                  'THUMBNAIL_URL': match_thumb}
                 hold = [int(hr[0]), int(hr[1])]
@@ -227,7 +227,7 @@ class ExecFaster:
                                                                  'URL': match,
                                                                  'HR': hr[0], 'MN': hr[1],
                                                                  'NAME': cls.dict_translated[
-                                                                     time_name[1]],
+                                                                     'holo'],
                                                                  'LIVE': live,
                                                                  'THUMBNAIL_URL': match_thumb}
                 hold = [int(hr[0]), int(hr[1])]
