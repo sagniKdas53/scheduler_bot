@@ -142,14 +142,14 @@ async def on_message(message):
         firstly, make a way to check if there are any reminder worthy streams in the list if there are then add reacts,
         also figure out a way to actually send the messages at the given time.
         '''
-        await resp.add_reaction(u"\U0001F446")
-        await resp.add_reaction(u"\U0001F44A")
-        await resp.add_reaction(u"\U0001F447")
+        await resp.add_reaction(':one:')
+        await resp.add_reaction(':two:')
+        await resp.add_reaction(':three:')
 
         def check(ree, ur):
             em = str(ree.emoji)
             if message.author == ur:
-                if em == u"\U0001F446" or em == u"\U0001F44A" or em == u"\U0001F447":
+                if em == ':one:' or em == ':two:' or em == ':three:':
                     return True
             return False
 
@@ -157,11 +157,11 @@ async def on_message(message):
             reaction, user = await client.wait_for('reaction_add', timeout=30.0, check=check)
             print('Got ', reaction, ' from ', user)
             emo = str(reaction.emoji)
-            if emo == u"\U0001F446":
+            if emo == ':one:':
                 await message.channel.send("ONE")
-            if emo == u"\U0001F44A":
+            if emo == ':two:':
                 await message.channel.send("TWO")
-            if emo == u"\U0001F447":
+            if emo == ':three:':
                 await message.channel.send("THREE")
         except asyncio.TimeoutError:
             await message.channel.send('Failed to react')
