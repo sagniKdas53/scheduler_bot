@@ -146,14 +146,21 @@ async def on_message(message):
         firstly, make a way to check if there are any reminder worthy streams in the list if there are then add reacts,
         also figure out a way to actually send the messages at the given time.
         '''
-        await resp.add_reaction(emoji=dict_emo[':keycap1:'])
-        await resp.add_reaction(emoji=dict_emo[':keycap2:'])
-        await resp.add_reaction(emoji=dict_emo[':keycap3:'])
+        await resp.add_reaction(emoji=dict_emo['keycap1'])
+        await resp.add_reaction(emoji=dict_emo['keycap2'])
+        await resp.add_reaction(emoji=dict_emo['keycap3'])
+
+        async def rem(choice):
+            print(choice)
+            await asyncio.sleep(dict_rem[link_s[choice]] - 300)
+            await message.author.send(link_s[choice])
 
         def check(ree, ur):
             em = str(ree.emoji)
+            print(em)
             if message.author == ur:
-                if em == ':keycap1:' or em == ':keycap2:' or em == ':keycap3:':
+                if em == '<:keycap1:770320921113264158>' or em == '<:keycap2:770321327193718824>' \
+                        or em == '<:keycap3:770321274110083072>':
                     return True
             return False
 
@@ -162,23 +169,23 @@ async def on_message(message):
             print('Got ', reaction, ' from ', user)
             '''Need to format the messages test if the async io can handle long waits like days without becoming 
             unstable and check if emo actually getting the right string or do i need to use str(reaction.emoji.name)'''
-            emo = str(reaction.emoji)
+            emo = reaction.emoji
+            print('emo =', emo, '\n Type of emo is= ', type(emo), '\ntype of dict var is=',
+                  type(dict_emo[str(emo.name)]), '\n The queried emoji is= ', dict_emo[str(emo.name)],
+                  '\n The emoji key is=', str(emo.name))
             try:
-                if emo == ':keycap1:':
-                    await asyncio.sleep(dict_rem[0] - 300)
-                    await message.author.send(link_s[0])
-                if emo == ':keycap2:':
-                    await asyncio.sleep(dict_rem[1] - 300)
-                    await message.author.send(link_s[1])
-                if emo == ':keycap3:':
-                    await asyncio.sleep(dict_rem[2] - 300)
-                    await message.author.send(link_s[2])
+                if emo == dict_emo['keycap1']:
+                    await rem(0)
+                if emo == dict_emo['keycap2']:
+                    await rem(1)
+                if emo == dict_emo['keycap3']:
+                    await rem(2)
             except (asyncio.TimeoutError, TypeError):
                 pass
         except asyncio.TimeoutError:
             await message.channel.send('Failed to react')
         else:
-            await message.channel.send('React got')
+            print('Reaction got')
 
     if message.content.startswith("&&exit"):
         await message.channel.send("Exiting")
