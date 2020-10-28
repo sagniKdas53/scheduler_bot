@@ -61,7 +61,7 @@ async def on_ready():
     print(f'{client.user.name} has connected to Discord!')
     for emo_g in client.emojis:
         dict_emo[emo_g.name] = emo_g
-        
+
 
 @client.event
 async def on_message(message):
@@ -132,10 +132,9 @@ async def on_message(message):
                 await message.author.send('Stream starting in' + seconds)
 
         def check(ree, ur):
-            em = str(ree.emoji)
+            em = ree.emoji
             if message.author == ur:
-                if em == '<:keycap1:770320921113264158>' or em == '<:keycap2:770321327193718824>' \
-                        or em == '<:keycap3:770321274110083072>':
+                if em == dict_emo['keycap1'] or em == dict_emo['keycap2'] or em == dict_emo['keycap3']:
                     return True
             return False
 
