@@ -71,9 +71,6 @@ class ExecFaster:
                                             name_to_show, True)
         return out_pt  # table of names and status in input time zone.
 
-    '''This function needs some work on it why is it reading all the entries when it clearly knows what to pare and 
-    what to not'''
-
     def _generate_output_(self, dict_data_main, time_z, name, show_all):
         print('entered')
         dict_data = dict_data_main[name]
@@ -122,9 +119,6 @@ class ExecFaster:
             indX += 1
         print(link_list, table)
         return link_list, table, times_dict
-
-    '''What could be done here is that main storage stores the data as dictionary with the names as the key and the 
-    items in the dict could be the '''
 
     @classmethod
     def start_reading(cls, file_content):

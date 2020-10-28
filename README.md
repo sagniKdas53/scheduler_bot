@@ -3,7 +3,7 @@
 ## Basically the bot implementation of my other project that harvests data
 
 ### This is what it does once it's started
-![file](image/Screenshot_2020-09-24_03:26:39:030.png)
+will be added later.
 
 the &&upadte is supposed to be done automatically but I haven't done it yet.
 

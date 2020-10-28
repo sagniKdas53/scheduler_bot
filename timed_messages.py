@@ -1,10 +1,5 @@
 """
 NOW THIS IS THE MAIN ONE.
-this script is supposed to run every hour and update the object
-this also the update can be done by && update
-the main difference is that the embeds are made by me not discord, why? because i wanted to impose a limit on the number
-of videos shown, i only want to show the previews of live ones also the link if sent as part of the table look cluttered
-so i am working on making it look nice.
 """
 import asyncio
 import signal
@@ -64,18 +59,9 @@ obJ_class = working_bot_newer.ExecFaster()
 @client.event
 async def on_ready():
     print(f'{client.user.name} has connected to Discord!')
-    for guild in client.guilds:
-        print(guild.name)
-        members = '\n - '.join([member.name for member in guild.members])
-        print(f'Guild Members:\n - {members}')
-    print('The emojis in the guild are')
     for emo_g in client.emojis:
         dict_emo[emo_g.name] = emo_g
-        if emo_g.require_colons:
-            print('<:' + emo_g.name + ':' + emo_g.id + '>')
-        else:
-            print('is this even allowed?')
-
+        
 
 @client.event
 async def on_message(message):
@@ -89,26 +75,20 @@ async def on_message(message):
         time_z = text[2]
         stat = text[3]
         name = name.title()
-        print("Requested: " + name + " Time Zone: " + time_z + " Showing: " + stat)
         link_s, response, dict_rem = obJ_class.show_by_name(name, time_z, stat)
-        print(link_s, '\n\n', response)
         await message.channel.send(response)
 
     if message.content.startswith("&&send"):
         text = message.content
         text = text.split(' ')
-        print(text, '\n\n')
         name = text[1]
         time_i = text[2]
         stat = text[3]
         name = name.title()
-        print("Requested: " + name + "Time Zone: " + time_i + " Showing: " + stat)
         link_s, response, dict_rem = obJ_class.show_by_name(name, time_i, stat)
-        print(link_s, '\n', response)
         await message.channel.send(response)
         embed = discord.Embed(title='Video')
         size = len(link_s)
-        print("Number of entries =" + str(size))
         if size > 3:
             link_s = [link_s[-3], link_s[-2], link_s[-1]]
         for link in link_s:
@@ -121,18 +101,14 @@ async def on_message(message):
     if message.content.startswith("&&rem"):
         text = message.content
         text = text.split(' ')
-        print(text, '\n\n')
         name = text[1]
         time_i = text[2]
         stat = text[3]
         name = name.title()
-        print("Requested: " + name + "Time Zone: " + time_i + " Showing: " + stat)
         link_s, response, dict_rem = obJ_class.show_by_name(name, time_i, stat)
-        print(link_s, '\n', response)
         await message.channel.send(response)
         embed = discord.Embed(title='Video')
         size = len(link_s)
-        print("Number of entries =" + str(size))
         if size > 3:
             link_s = [link_s[-3], link_s[-2], link_s[-1]]
         for link in link_s:
@@ -142,22 +118,21 @@ async def on_message(message):
             embed.set_image(url=sub_l[1])
         await message.channel.send(embed=embed)
         resp = await message.channel.send('Add a reaction in 30 sec to set reminder')
-        '''
-        firstly, make a way to check if there are any reminder worthy streams in the list if there are then add reacts,
-        also figure out a way to actually send the messages at the given time.
-        '''
         await resp.add_reaction(emoji=dict_emo['keycap1'])
         await resp.add_reaction(emoji=dict_emo['keycap2'])
         await resp.add_reaction(emoji=dict_emo['keycap3'])
 
         async def rem(choice):
-            print(choice)
-            await asyncio.sleep(dict_rem[link_s[choice]] - 300)
+            seconds = dict_rem[link_s[choice]] - 300
+            await asyncio.sleep(seconds)
             await message.author.send(link_s[choice])
+            if seconds <= 0:
+                await message.author.send('Stream starting is live')
+            else:
+                await message.author.send('Stream starting in' + seconds)
 
         def check(ree, ur):
             em = str(ree.emoji)
-            print(em)
             if message.author == ur:
                 if em == '<:keycap1:770320921113264158>' or em == '<:keycap2:770321327193718824>' \
                         or em == '<:keycap3:770321274110083072>':
@@ -166,13 +141,7 @@ async def on_message(message):
 
         try:
             reaction, user = await client.wait_for('reaction_add', timeout=30.0, check=check)
-            print('Got ', reaction, ' from ', user)
-            '''Need to format the messages test if the async io can handle long waits like days without becoming 
-            unstable and check if emo actually getting the right string or do i need to use str(reaction.emoji.name)'''
             emo = reaction.emoji
-            print('emo =', emo, '\n Type of emo is= ', type(emo), '\ntype of dict var is=',
-                  type(dict_emo[str(emo.name)]), '\n The queried emoji is= ', dict_emo[str(emo.name)],
-                  '\n The emoji key is=', str(emo.name))
             try:
                 if emo == dict_emo['keycap1']:
                     await rem(0)
@@ -184,8 +153,6 @@ async def on_message(message):
                 pass
         except asyncio.TimeoutError:
             await message.channel.send('Failed to react')
-        else:
-            print('Reaction got')
 
     if message.content.startswith("&&exit"):
         await message.channel.send("Exiting")
