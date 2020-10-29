@@ -89,7 +89,7 @@ async def add_fav(ctx, *args):
 
 
 @bot.command(
-    help="input : name, show what?(nor_over/all), your timezone <no commas needed>",
+    help="input : name, show what?(nor_over/all), your timezone <no commas needed>   use '' to escape a field",
     brief="shows the simplest list"
 )
 async def show(ctx, *args):
@@ -125,7 +125,7 @@ async def show(ctx, *args):
 
 
 @bot.command(
-    help="input : name, show what?(nor_over/all), timezone <no commas needed>",
+    help="input : name, show what?(nor_over/all), your timezone <no commas needed>   use '' to escape a field",
     brief="shows the simplest list and embeds last three items of the list"
 )
 async def semb(ctx, *args):
@@ -173,7 +173,7 @@ async def semb(ctx, *args):
 
 
 @bot.command(
-    help="input : name, show what?(nor_over/all), your timezone <no commas needed>",
+    help="input : name, show what?(nor_over/all), your timezone <no commas needed>   use '' to escape a field",
     brief="shows the simplest list and embeds last three items of the list also allows reminders to be set"
 )
 async def addrem(ctx, *args):
@@ -230,7 +230,7 @@ async def addrem(ctx, *args):
         if seconds <= 0:
             await ctx.author.send('Stream starting is live')
         else:
-            await ctx.author.send('Stream starting in' + seconds)
+            await ctx.author.send('Stream starting in' + str(seconds))
 
     def check(ree, ur):
         em = ree.emoji
@@ -240,7 +240,7 @@ async def addrem(ctx, *args):
         return False
 
     try:
-        reaction, user = await ctx.wait_for('reaction_add', timeout=30.0, check=check)
+        reaction, user = await bot.wait_for('reaction_add', timeout=30.0, check=check)
         emo = reaction.emoji
         try:
             if emo == dict_emo['keycap1']:
