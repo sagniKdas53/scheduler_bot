@@ -13,7 +13,7 @@ dict_emo = {}
 
 @bot.command(
     help="input = name,  show what?(nor_over/all), your timezone <no commas needed>",
-    brief="test to see if dicts work"
+    brief="tet to see if dicts work"
 )
 async def show(ctx, *args):
     name = ''
@@ -51,7 +51,7 @@ async def show(ctx, *args):
 
 @bot.command(
     help="input = your time zone , see from the list using command list_tz",
-    brief="test to see if dicts work"
+    brief="tet to see if dicts work"
 )
 async def add_tz(ctx, *args):
     print(str(args))
@@ -62,7 +62,7 @@ async def add_tz(ctx, *args):
 
 @bot.command(
     help="input = name of your favorite",
-    brief="test to see if dicts work"
+    brief="tet to see if dicts work"
 )
 async def add_fav(ctx, *args):
     print(str(args))

@@ -12,10 +12,11 @@ class Test:
     @classmethod
     def start_reading(cls):
         headers = {'User-Agent': 'Mozilla/5.0'}
-        file_content = requests.get(url='https://old.reddit.com/r/Hololive/new/', headers=headers)
+        file_content = requests.get(url='https://old.reddit.com/r/Hololive/new/', headers=headers).content
+        # open('newest submissions _ Hololive.html', 'r')
         flip_soup = _soup_(file_content, "html.parser")
-        cls.containers_thumb = flip_soup.find_all('a', class_="thumbnail invisible-when-pinned may-blank loggedin ")
-        cls.containers_title = flip_soup.find_all('a', class_="title may-blank loggedin ")
+        cls.containers_thumb = flip_soup.find_all('a', class_="title may-blank loggedin ")
+        cls.containers_title = flip_soup.find_all('a', class_="thumbnail invisible-when-pinned may-blank loggedin ")
 
         print(cls.containers_title)
 
@@ -26,3 +27,8 @@ class Test:
     @classmethod
     def give_top(cls):
         return cls.containers_thumb[0], cls.containers_title[0]
+
+
+do = Test()
+
+print(do.give_top())

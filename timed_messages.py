@@ -2,9 +2,6 @@
 NOW THIS IS THE MAIN ONE.
 """
 import asyncio
-import signal
-import threading
-from datetime import timedelta
 
 import discord
 import sys
@@ -29,30 +26,8 @@ def update_demon():
     obJ_class.update()
     size_af = sys.getsizeof(obJ_class)
     print("\nSchedule Updated on :", time.ctime(), '\nChange in size : ', size_b4 - size_af)
-
-
-def signal_handler(signum, frame):
-    print("Killed by :", signum, "\nIn Frame :" + frame)
-    raise ProgramKilled
-
-
-class Job(threading.Thread):
-    def __init__(self, interval, execute, *args, **kwargs):
-        threading.Thread.__init__(self)
-        self.daemon = False
-        self.stopped = threading.Event()
-        self.interval = interval
-        self.execute = execute
-        self.args = args
-        self.kwargs = kwargs
-
-    def stop(self):
-        self.stopped.set()
-        self.join()
-
-    def run(self):
-        while not self.stopped.wait(self.interval.total_seconds()):
-            self.execute(*self.args, **self.kwargs)
+    await asyncio.sleep(WAIT_TIME_SECONDS)
+    update_demon()
 
 
 bot = commands.Bot(command_prefix="?")
@@ -64,11 +39,13 @@ async def on_ready():
     print(f'{bot.user.name} has connected to Discord!')
     for emo_g in bot.emojis:
         dict_emo[emo_g.name] = emo_g
+    await asyncio.sleep(WAIT_TIME_SECONDS)
+    update_demon()
 
 
 @bot.command(
     help="input = your time zone , see from the list using command list_tz",
-    brief="test to see if dicts work"
+    brief="tet to see if dicts work"
 )
 async def add_tz(ctx, *args):
     print(str(args))
@@ -79,7 +56,7 @@ async def add_tz(ctx, *args):
 
 @bot.command(
     help="input = name of your favorite",
-    brief="test to see if dicts work"
+    brief="tet to see if dicts work"
 )
 async def add_fav(ctx, *args):
     print(str(args))
@@ -263,7 +240,6 @@ async def stop(ctx):
     await ctx.channel.send("Exiting")
     await bot.close()
     print("Successfully logged out")
-    job.stop()
     # sys.exit(0)
 
 
@@ -296,9 +272,5 @@ async def on_error(event, *args, **kwargs):
             raise
 
 
-signal.signal(signal.SIGTERM, signal_handler)
-signal.signal(signal.SIGINT, signal_handler)
 print(time.ctime())
-job = Job(interval=timedelta(seconds=WAIT_TIME_SECONDS), execute=update_demon)
-job.start()
 bot.run(token(), bot=True)
