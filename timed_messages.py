@@ -2,6 +2,7 @@
 NOW THIS IS THE MAIN ONE.
 """
 import asyncio
+import datetime
 
 import discord
 import sys
@@ -26,12 +27,42 @@ def update_demon():
     obJ_class.update()
     size_af = sys.getsizeof(obJ_class)
     print("\nSchedule Updated on :", time.ctime(), '\nChange in size : ', size_b4 - size_af)
+    obJ_class.now = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
     await asyncio.sleep(WAIT_TIME_SECONDS)
     update_demon()
 
 
 bot = commands.Bot(command_prefix="?")
+bot.remove_command('help')
 obJ_class = working_bot_newer.ExecFaster()
+
+
+@bot.command()
+async def help(ctx):
+    embed = discord.Embed(title="Help", url="https://github.com/sagniKdas53/scheduler_bot",
+                          description="This is all the bot can do", color=0xcf4a4a)
+    embed.add_field(name="Quality of Life Features", value="They will make your life easy", inline=False)
+    embed.add_field(name="add_tz", value="input = your time zone , see from the list using command list_tz",
+                    inline=True)
+    embed.add_field(name="add_fav", value="input = name of your favorite", inline=True)
+    embed.add_field(name="list_tz", value="Links to the list of time zones", inline=True)
+    embed.add_field(name="Output Commands", value="The commands which generate output", inline=False)
+    embed.add_field(name="show", value="input = name,  show what?(nor_over/all), your timezone <no commas needed>",
+                    inline=True)
+    embed.add_field(name="semb", value="input : name, show what?(nor_over/all), your timezone <no commas needed>   "
+                                       "use '' to escape a field. Shows the simple list and embeds last three items "
+                                       "of the list", inline=True)
+    embed.add_field(name="addrem",
+                    value="input : name, show what?(nor_over/all), your timezone <no commas needed>   "
+                          "use '' to escape a field. Shows the simplest list and embeds last three items of the list "
+                          "also allows reminders to be set",
+                    inline=True)
+    embed.add_field(name="Admin", value="This are the admin commands", inline=False)
+    embed.add_field(name="stop", value="Stops the bot", inline=True)
+    embed.add_field(name="age", value="Shows the last time data was updated", inline=True)
+    embed.add_field(name="update", value="Updates the data", inline=True)
+    embed.set_footer(text="please fell free to contribute at github")
+    await ctx.send(embed=embed)
 
 
 @bot.event
@@ -43,10 +74,7 @@ async def on_ready():
     update_demon()
 
 
-@bot.command(
-    help="input = your time zone , see from the list using command list_tz",
-    brief="tet to see if dicts work"
-)
+@bot.command()
 async def add_tz(ctx, *args):
     print(str(args))
     usr = ctx.author
@@ -54,10 +82,7 @@ async def add_tz(ctx, *args):
     await ctx.channel.send("Saved")
 
 
-@bot.command(
-    help="input = name of your favorite",
-    brief="tet to see if dicts work"
-)
+@bot.command()
 async def add_fav(ctx, *args):
     print(str(args))
     usr = ctx.author
@@ -65,10 +90,7 @@ async def add_fav(ctx, *args):
     await ctx.channel.send("Saved")
 
 
-@bot.command(
-    help="input : name, show what?(nor_over/all), your timezone <no commas needed>   use '' to escape a field",
-    brief="shows the simplest list"
-)
+@bot.command()
 async def show(ctx, *args):
     name = ''
     time_z = ''
@@ -101,10 +123,7 @@ async def show(ctx, *args):
     await ctx.channel.send(response)
 
 
-@bot.command(
-    help="input : name, show what?(nor_over/all), your timezone <no commas needed>   use '' to escape a field",
-    brief="shows the simplest list and embeds last three items of the list"
-)
+@bot.command()
 async def semb(ctx, *args):
     name = ''
     time_z = ''
@@ -149,10 +168,7 @@ async def semb(ctx, *args):
     await ctx.channel.send(embed=embed)
 
 
-@bot.command(
-    help="input : name, show what?(nor_over/all), your timezone <no commas needed>   use '' to escape a field",
-    brief="shows the simplest list and embeds last three items of the list also allows reminders to be set"
-)
+@bot.command()
 async def addrem(ctx, *args):
     name = ''
     time_z = ''
@@ -232,29 +248,24 @@ async def addrem(ctx, *args):
         await ctx.channel.send('Failed to react')
 
 
-@bot.command(
-    help="input : none",
-    brief="stops the bot"
-)
+@bot.command()
+async def list_tz(ctx):
+    await ctx.channel.send("See from list: " + 'Url here')
+
+
+@bot.command()
 async def stop(ctx):
     await ctx.channel.send("Exiting")
     await bot.close()
     print("Successfully logged out")
-    # sys.exit(0)
 
 
-@bot.command(
-    help="input : none",
-    brief="shows when the bot data was last updated"
-)
+@bot.command()
 async def age(ctx):
     await ctx.channel.send('Last updated:' + obJ_class.now)
 
 
-@bot.command(
-    help="input : none",
-    brief="updates the bot"
-)
+@bot.command()
 async def update(ctx):
     await ctx.channel.send("Wait a minute")
     getD = obJ_class.update()
