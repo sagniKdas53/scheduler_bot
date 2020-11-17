@@ -28,7 +28,7 @@ def update_demon():
     size_af = sys.getsizeof(obJ_class)
     print("\nSchedule Updated on :", time.ctime(), '\nChange in size : ', size_b4 - size_af)
     obJ_class.now = datetime.datetime.now().strftime("%m/%d/%Y, %H:%M:%S")
-    await asyncio.sleep(WAIT_TIME_SECONDS)
+    asyncio.sleep(WAIT_TIME_SECONDS)
     update_demon()
 
 
@@ -76,7 +76,6 @@ async def on_ready():
 
 @bot.command()
 async def add_tz(ctx, *args):
-    print(str(args))
     usr = ctx.author
     user_dist_tz[usr] = args[0]
     await ctx.channel.send("Saved")
@@ -84,7 +83,6 @@ async def add_tz(ctx, *args):
 
 @bot.command()
 async def add_fav(ctx, *args):
-    print(str(args))
     usr = ctx.author
     user_fav[usr] = args[0]
     await ctx.channel.send("Saved")
@@ -129,8 +127,6 @@ async def semb(ctx, *args):
     time_z = ''
     stat = ''
     usr = ctx.author
-    print(str(args))
-    print(usr)
     try:
         name = args[0]
     except IndexError:
@@ -174,8 +170,6 @@ async def addrem(ctx, *args):
     time_z = ''
     stat = ''
     usr = ctx.author
-    print(str(args))
-    print(usr)
     try:
         name = args[0]
     except IndexError:

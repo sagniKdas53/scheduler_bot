@@ -62,7 +62,6 @@ class ExecFaster:
         return out_pt  # table of names and status in input time zone.
 
     def show_by_name(self, name_to_show, time_x, boole):
-        print(name_to_show, time_x, boole)
         if boole == 'not_over':
             out_pt = self._generate_output_(self.rapid_access_via_names, time_x,
                                             name_to_show, False)
@@ -72,7 +71,6 @@ class ExecFaster:
         return out_pt  # table of names and status in input time zone.
 
     def _generate_output_(self, dict_data_main, time_z, name, show_all):
-        print('entered')
         dict_data = dict_data_main[name]
         table = '{:<5}{:' '^8} {:8}{:<3}:{:<3}'.format('Index', 'Name', 'Status', 'Hour', 'Minute')
         link_list = []
@@ -81,7 +79,6 @@ class ExecFaster:
         source_time_zone = pytz.timezone("Asia/Tokyo")
         for row in dict_data.items():
             # MON,DAY,ID,HR,MN,NAME,LIVE,THUMBNAIL_URL
-            print(row)
             source_mon = row[1]['MON']
             source_day = row[1]['DAY']
             source_link = '[Link](' + row[1]['URL'] + ')'
@@ -93,7 +90,6 @@ class ExecFaster:
                                    int(source_min), 00, 0000)
             source_date_with_timezone = source_time_zone.localize(source_time)
             val = self.time_left(source_date_with_timezone, time_z)
-            print(source_name, " has ", val, " time left")
             target_time_zone = pytz.timezone(time_z)
             time_ob = source_date_with_timezone.astimezone(target_time_zone)
             if source_stat == "NOT":
@@ -117,7 +113,6 @@ class ExecFaster:
                     link_list.append(source_link)
                     times_dict[source_link] = 0
             indX += 1
-        print(link_list, table)
         return link_list, table, times_dict
 
     @classmethod
@@ -131,10 +126,6 @@ class ExecFaster:
         for dates in containers_date:
             day = dates.text.strip().replace(' ', '').split()
             day_list.append(day[0].split('/'))
-        print("Schedule contains: ")
-        for month, day in day_list:
-            print("{}/{},".format(month, day), end='')
-        print('\n\n')
         for k in range(0, len(containers_link)):
             match = re.findall(r'href=\"(https:[//]*www\.youtube\.com/watch\?v=[0-9A-Za-z_-]{10}[048AEIMQUYcgkosw]*)\"',
                                str(containers_link[k]))[0]
@@ -150,18 +141,6 @@ class ExecFaster:
             cls.list_url.append(match)
             time_name = containers_link[k].text.replace(' ', '').split()
             hr = time_name[0].split(':')
-            try:
-                print('MON:', day_list[ms][0], 'DAY:', day_list[ms][1],
-                      'URL:', match,
-                      'HR:', hr[0], 'MN:', hr[1], 'NAME:', cls.dict_translated[time_name[1]],
-                      'LIVE:', live,
-                      'THUMBNAIL_URL:', match_thumb)
-            except KeyError:
-                print('MON:', day_list[ms][0], 'DAY:', day_list[ms][1],
-                      'URL:', match,
-                      'HR:', hr[0], 'MN:', hr[1], 'NAME:', time_name[1],
-                      'LIVE:', live,
-                      'THUMBNAIL_URL:', match_thumb)
             if int(hr[0]) != 23 and int(hr[1]) <= 59 and hold[0] == 23:
                 ms += 1
                 # MON,DAY,ID,HR,MN,NAME,LIVE,THUMBNAIL_URL
@@ -249,18 +228,15 @@ class ExecFaster:
     @classmethod
     def video_details(cls, video):
         for vid in video:
-            print(vid)
             params = {"format": "json", "url": vid}
             url = "https://www.youtube.com/oembed"
             query_string = parse.urlencode(params)
             url = url + "?" + query_string
-            print(url)
             try:
                 with request.urlopen(url) as response:
                     response_text = response.read()
                     data = json.loads(response_text.decode())
                     details = (data['title'], data['thumbnail_url'])
-                    print(details)
                     cls.titles_and_thumbs[vid] = details
                     time.sleep(0.1)
                     # max ping is 65.307 ms so it takes 0.065307 seconds to get the response so 100 ms seems good enough
@@ -268,7 +244,6 @@ class ExecFaster:
                 print(e)
                 details = ('ERROR', 'ERROR')
                 cls.titles_and_thumbs[vid] = details
-        print(cls.titles_and_thumbs)
 
     def update(self):
         self.now = datetime.now()
